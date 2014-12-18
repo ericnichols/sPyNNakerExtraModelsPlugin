@@ -1,4 +1,4 @@
-MODELS = lif_cond_stoc
+MODELS = IF_cond_exp_stoc
 BUILD_DIRS := $(addprefix src/, $(MODELS))
 
 all: $(BUILD_DIRS)
