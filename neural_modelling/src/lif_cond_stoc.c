@@ -64,9 +64,18 @@ void neuron_discrete_changes( neuron_pointer_t neuron ) {
 
 }
 
+// function that converts the input into the real value to be used by the neuron
+REAL neuron_get_exc_input(REAL exc_input) {
+    return exc_input >> 10;
+}
+
+// function that converts the input into the real value to be used by the neuron
+REAL neuron_get_inh_input(REAL inh_input) {
+    return inh_input >> 10;
+}
 
 // .277 ms
-bool neuron_state_update( REAL exc_input, REAL inh_input, neuron_pointer_t neuron ) {
+bool neuron_state_update( REAL exc_input, REAL inh_input, REAL external_bias, neuron_pointer_t neuron ) {
 
 	bool spike = false;
 	REAL V_last = neuron->V_membrane;
@@ -80,8 +89,8 @@ bool neuron_state_update( REAL exc_input, REAL inh_input, neuron_pointer_t neuro
 // we can probably assume that conductances must be positive, and so use unsigned in the buffers for better precision
 		input_this_timestep = 	exc_input * ( neuron->V_rev_E - V_last )  +   // need to check units and polarity of inh
 										inh_input * ( neuron->V_rev_I - V_last )  +
-										neuron->I_offset; // adding offset current - all need to be in nA
-        
+										external_bias + neuron->I_offset; // adding offset current - all need to be in nA
+
 
 		lif_neuron_closed_form( neuron, V_last, -neuron->refract_timer );
         bool ishigh = false;
@@ -95,13 +104,13 @@ bool neuron_state_update( REAL exc_input, REAL inh_input, neuron_pointer_t neuro
             neuron->V_membrane = neuron->V_rev_I + 0.5;
         }
 //		ode_solve_fix_ss_expl( RK_METHOD, NO_OF_EXPL_FIX_STEPS, EXPL_FIX_STEP_SIZE, neuron );
-        
+
         //stochastic threshold code.
         //begin with random number between 0 and 1
         uint32_t r = mars_kiss64_simp();
         r &= 0xffff;
         unsigned accum ra = ukbits(r);
-        
+
         unsigned accum result;
         accum exponent = (neuron->V_membrane-neuron->theta)*neuron->du_th_inv;
         const unsigned fract prob_saturation = 0.8;
@@ -109,12 +118,12 @@ bool neuron_state_update( REAL exc_input, REAL inh_input, neuron_pointer_t neuro
         if (exponent < 5.0) {
             accum hazard = expk(exponent)*neuron->tau_th_inv;
             result = (1.-expk(-hazard*refractory_time_update))*prob_saturation;
-            
+
         } else {
             result = prob_saturation;
         }
         //io_printf( IO_BUF, "\n %1.6R", result );
-        
+
 		spike = REAL_COMPARE( result, >=, ra );  // has it spiked?
 
 		if( spike ) {
@@ -143,7 +152,7 @@ REAL neuron_get_state( uint8_t i, neuron_pointer_t neuron ) {
 
 //
 neuron_pointer_t create_lif_cond_stoc_neuron(REAL V_reset, REAL V_rest, REAL V_rev_E, REAL V_rev_I, REAL du_th_inv,
-            REAL tau_th_inv, REAL theta, REAL one_over_tauRC, REAL R, int32_t T_refract, REAL V, REAL I, 
+            REAL tau_th_inv, REAL theta, REAL one_over_tauRC, REAL R, int32_t T_refract, REAL V, REAL I,
             int32_t refract_timer, REAL exp_tc )
 {
 	neuron_pointer_t neuron = spin1_malloc( sizeof( neuron_t ) );
