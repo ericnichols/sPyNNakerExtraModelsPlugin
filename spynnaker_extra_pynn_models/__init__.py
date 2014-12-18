@@ -11,3 +11,6 @@ def _init_module():
         model_binaries.__file__))
 
 _init_module()
+
+from if_cond_exp_stoc import IFConductanceExponentialStochasticPopulation \
+    as IF_cond_exp_stoc
