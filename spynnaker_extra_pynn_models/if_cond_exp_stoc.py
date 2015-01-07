@@ -9,11 +9,11 @@ from spynnaker.pyNN.models.abstract_models.abstract_integrate_and_fire_propertie
 from spynnaker.pyNN.models.neural_properties.neural_parameter \
     import NeuronParameter
 from spynnaker.pyNN.models.abstract_models.abstract_conductive_vertex \
-    import AbstractConductiveVertex
+    import AbstractConductanceVertex
 
 
 class IFConductanceExponentialStochasticPopulation(AbstractExponentialPopulationVertex,
-                                         AbstractConductiveVertex,
+                                         AbstractConductanceVertex,
                                          AbstractIntegrateAndFireProperties,
                                          AbstractPopulationVertex):
     CORE_APP_IDENTIFIER = constants.IF_CONDUCTIVE_EXP_CORE_APPLICATION_ID
@@ -25,7 +25,7 @@ class IFConductanceExponentialStochasticPopulation(AbstractExponentialPopulation
                  v_rest=-65.0, v_reset=-65.0, tau_syn_E=5.0, tau_syn_I=5.0, 
                  tau_refrac=0.1, v_thresh=-50.0, du_th=0.5, tau_th=20.0, i_offset=0.0,  v_init=-65.0):
         # Instantiate the parent classes
-        AbstractConductiveVertex.__init__(self, n_neurons, e_rev_E=e_rev_E,
+        AbstractConductanceVertex.__init__(self, n_neurons, e_rev_E=e_rev_E,
                                           e_rev_I=e_rev_I)
         AbstractExponentialPopulationVertex.__init__(
             self, n_neurons=n_neurons, tau_syn_E=tau_syn_E,
