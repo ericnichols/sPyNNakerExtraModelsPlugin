@@ -12,5 +12,8 @@ def _init_module():
 
 _init_module()
 
-from if_cond_exp_stoc import IFConductanceExponentialStochasticPopulation \
-    as IF_cond_exp_stoc
+from spynnaker_extra_pynn_models.neural_models.if_cond_exp_stoc \
+    import IFConductanceExponentialStochasticPopulation as IF_cond_exp_stoc
+from spynnaker_extra_pynn_models.neural_properties.synapse_dynamics\
+    .dependences.recurrent_time_dependency\
+    import RecurrentTimeDependency as RecurrentRule
