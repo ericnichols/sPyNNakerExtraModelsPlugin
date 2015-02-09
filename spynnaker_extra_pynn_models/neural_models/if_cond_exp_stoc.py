@@ -130,3 +130,15 @@ class IFConductanceExponentialStochasticPopulation(
             NeuronParameter(self._refract_timer, DataType.UINT32),
             NeuronParameter(self._scaled_t_refract(), DataType.UINT32),
         ]
+
+    def is_conductive(self):
+        return True
+
+    def is_exp_vertex(self):
+        return True
+
+    def is_integrate_and_fire_vertex(self):
+        return True
+
+    def is_population_vertex(self):
+        return True
