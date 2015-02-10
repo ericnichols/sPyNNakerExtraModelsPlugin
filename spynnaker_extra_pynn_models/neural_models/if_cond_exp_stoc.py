@@ -142,3 +142,6 @@ class IFConductanceExponentialStochasticPopulation(
 
     def is_population_vertex(self):
         return True
+
+    def is_recordable(self):
+        return True
