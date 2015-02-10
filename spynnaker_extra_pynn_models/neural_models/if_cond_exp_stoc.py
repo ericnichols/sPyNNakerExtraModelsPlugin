@@ -19,7 +19,8 @@ class IFConductanceExponentialStochasticPopulation(
     _model_based_max_atoms_per_core = 60
 
     # noinspection PyPep8Naming
-    def __init__(self, n_neurons, machine_time_step, constraints=None,
+    def __init__(self, n_neurons, machine_time_step, timescale_factor,
+                 spikes_per_second, ring_buffer_sigma, constraints=None,
                  label=None, tau_m=20., cm=1.0, e_rev_E=0.0, e_rev_I=-70.0,
                  v_rest=-65.0, v_reset=-65.0, tau_syn_E=5.0, tau_syn_I=5.0,
                  tau_refrac=0.1, v_thresh=-50.0, du_th=0.5, tau_th=20.0,
@@ -39,7 +40,10 @@ class IFConductanceExponentialStochasticPopulation(
             self, n_neurons=n_neurons, n_params=14, label=label,
             max_atoms_per_core=IFConductanceExponentialStochasticPopulation._model_based_max_atoms_per_core,
             binary="IF_cond_exp_stoc.aplx", constraints=constraints,
-            machine_time_step=machine_time_step)
+            machine_time_step=machine_time_step,
+            timescale_factor=timescale_factor,
+            spikes_per_second=spikes_per_second,
+            ring_buffer_sigma=ring_buffer_sigma)
         self._executable_constant = \
             IFConductanceExponentialStochasticPopulation.CORE_APP_IDENTIFIER
         self.theta = v_thresh
