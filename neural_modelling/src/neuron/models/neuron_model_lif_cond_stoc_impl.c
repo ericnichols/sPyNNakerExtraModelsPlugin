@@ -310,7 +310,8 @@ neuron_pointer_t neuron_model_lif_cond_impl_create(REAL V_thresh, REAL V_reset,
     neuron->V_rev_E = V_rev_E;
     neuron->V_rev_I = V_rev_I;
 
-    neuron->du_th_inv = du_th_inv;	  				io_printf( IO_STD, "inverse threshold du   %11.4k mv\n", neuron->du_th_inv );
+    neuron->du_th_inv = du_th_inv;
+    io_printf( IO_STD, "inverse threshold du   %11.4k mv\n", neuron->du_th_inv );
     neuron->tau_th_inv = tau_th_inv;
 
     neuron->I_offset = I;
