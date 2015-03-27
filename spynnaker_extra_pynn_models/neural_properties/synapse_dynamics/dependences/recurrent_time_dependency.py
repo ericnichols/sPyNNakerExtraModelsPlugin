@@ -13,13 +13,14 @@ from spynnaker.pyNN.models.neural_properties.synapse_dynamics\
 
 class RecurrentTimeDependency(AbstractTimeDependency):
     def __init__(self, accumulator_depression=-6, accumulator_potentiation=6,
-                 mean_pre_window=35.0, mean_post_window=35.0):
+                 mean_pre_window=35.0, mean_post_window=35.0, dual_fsm=False):
         AbstractTimeDependency.__init__(self)
 
         self.accumulator_depression_plus_one = accumulator_depression + 1
         self.accumulator_potentiation_minus_one = accumulator_potentiation - 1
         self.mean_pre_window = mean_pre_window
         self.mean_post_window = mean_post_window
+        self.dual_fsm = dual_fsm
 
     def __eq__(self, other):
         if (other is None) or (not isinstance(other, RecurrentTimeDependency)):
@@ -68,12 +69,12 @@ class RecurrentTimeDependency(AbstractTimeDependency):
 
     @property
     def vertex_executable_suffix(self):
-        return "recurrent_pre_stochastic"
+        return "recurrent_dual_fsm" if self.dual_fsm else "recurrent_pre_stochastic"
 
     @property
     def pre_trace_size_bytes(self):
-        # The recurrent rule is essentially nearest-neighbour
-        return 0
+        # When using the seperate FSMs, pre-trace contains window length, otherwise it's in the synapse
+        return 2 if self.dual_fsm else 0
 
     def _write_exp_dist_lut(self, spec, mean):
         for x in range(plasticity_helpers.STDP_FIXED_POINT_ONE):
