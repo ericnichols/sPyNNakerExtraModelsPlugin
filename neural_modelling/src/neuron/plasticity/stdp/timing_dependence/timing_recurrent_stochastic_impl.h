@@ -35,7 +35,7 @@ static inline bool _in_window(
         int32_t cdf = cdf_lut[time_since_last_event];
 
         // Pick random number
-        int32_t random = _mars_kiss_fixed_point();
+        int32_t random = mars_kiss_fixed_point();
         log_debug("\t\tCDF=%d, Random=%d", cdf, random);
 
         // Return true if it's greater than CDF

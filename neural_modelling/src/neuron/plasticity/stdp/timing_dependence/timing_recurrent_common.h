@@ -11,6 +11,8 @@
 #include "neuron/plasticity/common/maths.h"
 #include "neuron/plasticity/common/stdp_typedefs.h"
 
+#include "random_util.h"
+
 static bool timing_recurrent_in_pre_window(
     uint32_t time_since_last_event, update_state_t previous_state);
 
@@ -22,35 +24,6 @@ static update_state_t timing_recurrent_calculate_pre_window(
 
 static update_state_t timing_recurrent_calculate_post_window(
     update_state_t previous_state);
-
-// Utility function
-static inline int32_t _mars_kiss_fixed_point() {
-
-    // **YUCK** copy and pasted rng to allow inlining and also to avoid horrific
-    // executable bloat
-
-    /* Seed variables */
-    static uint32_t x = 123456789;
-    static uint32_t y = 234567891;
-    static uint32_t z = 345678912;
-    static uint32_t w = 456789123;
-    static uint32_t c = 0;
-    int32_t t;
-
-    y ^= (y << 5);
-    y ^= (y >> 7);
-    y ^= (y << 22);
-    t = z + w + c;
-    z = w;
-    c = t < 0;
-    w = t & 2147483647;
-    x += 1411392427;
-
-    uint32_t random = x + y + w;
-
-    // **YUCK** mask out and return STDP_FIXED_POINT_ONE lowest bits
-    return (int32_t)(random & (STDP_FIXED_POINT_ONE - 1));
-}
 
 //---------------------------------------
 // Macros
