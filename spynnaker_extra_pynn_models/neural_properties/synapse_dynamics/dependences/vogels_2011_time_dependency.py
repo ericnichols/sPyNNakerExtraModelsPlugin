@@ -23,7 +23,7 @@ class Vogels2011Rule(AbstractTimeDependency):
         self._tau = tau
 
     def __eq__(self, other):
-        if (other is None) or (not isinstance(other, MyTiming)):
+        if (other is None) or (not isinstance(other, Vogels2011Rule)):
             return False
         return ((self._tau == other._tau))
 
