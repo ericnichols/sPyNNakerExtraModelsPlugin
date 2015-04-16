@@ -17,3 +17,6 @@ from spynnaker_extra_pynn_models.neural_models.if_cond_exp_stoc \
 from spynnaker_extra_pynn_models.neural_properties.synapse_dynamics\
     .dependences.recurrent_time_dependency\
     import RecurrentTimeDependency as RecurrentRule
+from spynnaker_extra_pynn_models.neural_properties.synapse_dynamics\
+    .dependences.vogels_2011_time_dependency\
+    import Vogels2011Rule

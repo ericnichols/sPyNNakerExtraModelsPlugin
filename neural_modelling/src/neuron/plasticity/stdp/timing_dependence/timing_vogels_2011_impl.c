@@ -12,11 +12,9 @@ plasticity_trace_region_data_t plasticity_trace_region_data;
 //---------------------------------------
 // Functions
 //---------------------------------------
-uint32_t *plasticity_region_trace_filled(uint32_t* address, uint32_t flags)
+uint32_t *timing_initialise(uint32_t* address)
 {
-  use(flags);
-
-  log_info("plasticity_region_trace_filled: starting");
+  log_info("timing_initialise: starting");
   log_info("\tVogels 2011 timing rule");
   
   // Copy parameters
@@ -25,7 +23,7 @@ uint32_t *plasticity_region_trace_filled(uint32_t* address, uint32_t flags)
   // Copy LUTs from following memory
   address_t lut_address = maths_copy_int16_lut(&address[1], TAU_SIZE, &tau_lookup[0]);
 
-  log_info("plasticity_region_trace_filled: completed successfully");
+  log_info("timing_initialise: completed successfully");
 
   return lut_address;
 }
