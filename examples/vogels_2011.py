@@ -1,14 +1,15 @@
 
 import spynnaker.pyNN as sim
+import spynnaker_extra_pynn_models as q
 import numpy
 import pylab
 
-# Should we try and use inhibitory plasticity
-plastic = True
 
-# Should we load spike trains from numpy files rather than run simulation
-load = False
-
+#-------------------------------------------------------------------
+# This example uses the sPyNNaker implementation of the inhibitory
+# Plasticity rule developed by Vogels, Sprekeler, Zenke et al (2011)
+# To reproduce the experiment from their paper
+#-------------------------------------------------------------------
 # Population parameters
 model = sim.IF_curr_exp
 cell_params = {
@@ -55,47 +56,36 @@ def build_network(dynamics):
 
     return ex_pop, ie_projection
 
-# If we should load the spike trains from disk
-if load:
-    static_spikes = numpy.load("static_spikes.npy")
-    plastic_spikes = numpy.load("plastic_spikes.npy")
-# Otherwise
-else:
-    # Build static network
-    static_ex_pop,_ = build_network(None)
 
-    # Run for 1s
-    sim.run(1000)
+# Build static network
+static_ex_pop,_ = build_network(None)
 
-    # Get static spikes and save to disk
-    static_spikes = static_ex_pop.getSpikes(compatible_output=True)
-    numpy.save("static_spikes.npy", static_spikes)
+# Run for 1s
+sim.run(1000)
 
-    # If we should attempt to apply plasticity
-    if plastic:
-        # Import your newly created module
-        import spynnaker_extra_pynn_models as q
-        
-        # Build inhibitory plasticity  model
-        stdp_model = sim.STDPMechanism(
-            timing_dependence = q.Vogels2011Rule(alpha=0.12,tau=20.0),
-            weight_dependence = sim.AdditiveWeightDependence(w_min=0.0, w_max=1.0, A_plus=0.05),
-            mad=True
-        )
+# Get static spikes and save to disk
+static_spikes = static_ex_pop.getSpikes(compatible_output=True)
 
-        # Build plastic network
-        plastic_ex_pop, plastic_ie_projection = build_network(sim.SynapseDynamics(slow = stdp_model))
+# Build inhibitory plasticity  model
+stdp_model = sim.STDPMechanism(
+    timing_dependence = q.Vogels2011Rule(alpha=0.12,tau=20.0),
+    weight_dependence = sim.AdditiveWeightDependence(w_min=0.0, w_max=1.0, A_plus=0.05),
+    mad=True
+)
 
-        # Run simulation
-        sim.run(10000)
+# Build plastic network
+plastic_ex_pop, plastic_ie_projection = build_network(sim.SynapseDynamics(slow = stdp_model))
 
-        # Get plastic spikes and save to disk
-        plastic_spikes = plastic_ex_pop.getSpikes(compatible_output=True)
-        numpy.save("plastic_spikes.npy", plastic_spikes)
-        
-        plastic_weights = plastic_ie_projection.getWeights(format="array")
-        mean_weight = numpy.average(plastic_weights)
-        print "Mean learnt ie weight:%f" % mean_weight
+# Run simulation
+sim.run(10000)
+
+# Get plastic spikes and save to disk
+plastic_spikes = plastic_ex_pop.getSpikes(compatible_output=True)
+numpy.save("plastic_spikes.npy", plastic_spikes)
+
+plastic_weights = plastic_ie_projection.getWeights(format="array")
+mean_weight = numpy.average(plastic_weights)
+print "Mean learnt ie weight:%f" % mean_weight
 
 # Create plot
 fig, axes = pylab.subplots(3)
@@ -106,23 +96,21 @@ axes[0].scatter(static_spikes[:,1], static_spikes[:,0], s=2, color="blue")
 axes[0].set_xlim(800, 1000)
 axes[0].set_ylim(0, NUM_EXCITATORY)
 
-# If plasticity is enabled
-if plastic:
-    # Plot last 200ms of plastic spikes (to match Brian script)
-    axes[1].set_title("Excitatory raster with inhibitory plasticity")
-    axes[1].scatter(plastic_spikes[:,1], plastic_spikes[:,0], s=2, color="blue")
-    axes[1].set_xlim(9800, 10000)
-    axes[1].set_ylim(0, NUM_EXCITATORY)
-    
-    # Plot rates
-    binsize = 10
-    bins = numpy.arange(0, 10000 + 1, binsize)
-    plastic_hist, _ = numpy.histogram(plastic_spikes[:,1], bins=bins)
-    plastic_rate = plastic_hist * (1000.0/ binsize) * (1.0/NUM_EXCITATORY)
-    axes[2].set_title("Excitatory rates with inhibitory plasticity")
-    axes[2].plot(bins[0:-1], plastic_rate, color="red")
-    axes[2].set_xlim(9800, 10000)
-    axes[2].set_ylim(0, 20)
+# Plot last 200ms of plastic spikes (to match Brian script)
+axes[1].set_title("Excitatory raster with inhibitory plasticity")
+axes[1].scatter(plastic_spikes[:,1], plastic_spikes[:,0], s=2, color="blue")
+axes[1].set_xlim(9800, 10000)
+axes[1].set_ylim(0, NUM_EXCITATORY)
+
+# Plot rates
+binsize = 10
+bins = numpy.arange(0, 10000 + 1, binsize)
+plastic_hist, _ = numpy.histogram(plastic_spikes[:,1], bins=bins)
+plastic_rate = plastic_hist * (1000.0/ binsize) * (1.0/NUM_EXCITATORY)
+axes[2].set_title("Excitatory rates with inhibitory plasticity")
+axes[2].plot(bins[0:-1], plastic_rate, color="red")
+axes[2].set_xlim(9800, 10000)
+axes[2].set_ylim(0, 20)
 
 # Show figures
 pylab.show()
