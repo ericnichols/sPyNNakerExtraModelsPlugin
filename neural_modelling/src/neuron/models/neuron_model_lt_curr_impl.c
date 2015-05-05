@@ -50,12 +50,12 @@ state_t neuron_model_get_membrane_voltage(neuron_pointer_t neuron) {
 
 // printout of neuron definition and state variables
 void neuron_model_print(restrict neuron_pointer_t neuron) {
-    log_debug("V membrane    = %11.4k mv", neuron->V_membrane);
-    log_debug("V thresh      = %11.4k mv", neuron->V_thresh);
-    log_debug("V rest        = %11.4k mv", neuron->V_rest);
+    io_printf(IO_BUF, "V membrane    = %11.4k mv\n", neuron->V_membrane);
+    io_printf(IO_BUF, "V thresh      = %11.4k mv\n", neuron->V_thresh);
+    io_printf(IO_BUF, "V rest        = %11.4k mv\n", neuron->V_rest);
 
-    log_debug("I offset      = %11.4k nA", neuron->I_offset);
-    log_debug("R membrane    = %11.4k Mohm", neuron->R_membrane);
+    io_printf(IO_BUF, "I offset      = %11.4k nA\n", neuron->I_offset);
+    io_printf(IO_BUF, "R membrane    = %11.4k Mohm\n", neuron->R_membrane);
 
-    log_debug("exp(-ms/(RC)) = %11.4k [.]", neuron->exp_TC);
+    io_printf(IO_BUF, "exp(-ms/(RC)) = %11.4k [.]\n", neuron->exp_TC);
 }

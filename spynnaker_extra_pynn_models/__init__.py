@@ -12,6 +12,8 @@ def _init_module():
 
 _init_module()
 
+from spynnaker_extra_pynn_models.neural_models.lt_curr_delta \
+    import LTCurrentDeltaPopulation as LT_curr_delta
 from spynnaker_extra_pynn_models.neural_models.if_curr_delta \
     import IFCurrentDeltaPopulation as IF_curr_delta
 from spynnaker_extra_pynn_models.neural_models.if_cond_exp_stoc \
