@@ -1,6 +1,7 @@
 
 
 #include "lif_cond_stoc.h"
+#include "constants.h"
 
 #include "random.h"
 #include <stdfix.h>
