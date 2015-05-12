@@ -16,7 +16,6 @@ from spynnaker.pyNN.models.neural_properties.neural_parameter \
 class IFConductanceExponentialStochasticPopulation(
         AbstractExponentialPopulationVertex, AbstractConductanceVertex,
         AbstractIntegrateAndFireProperties, AbstractPopulationVertex):
-    CORE_APP_IDENTIFIER = constants.IF_CONDUCTIVE_EXP_CORE_APPLICATION_ID
     _model_based_max_atoms_per_core = 60
 
     # noinspection PyPep8Naming
@@ -46,8 +45,7 @@ class IFConductanceExponentialStochasticPopulation(
             timescale_factor=timescale_factor,
             spikes_per_second=spikes_per_second,
             ring_buffer_sigma=ring_buffer_sigma)
-        self._executable_constant = \
-            IFConductanceExponentialStochasticPopulation.CORE_APP_IDENTIFIER
+    
         self.theta = v_thresh
         self.du_th_inv = 1. / du_th
         self.tau_th_inv = 1. / tau_th
