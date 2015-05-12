@@ -20,8 +20,8 @@ class IFCurrentDeltaPopulation(AbstractDeltaPopulationVertex,
                                AbstractIntegrateAndFireProperties,
                                AbstractPopulationVertex):
     """
-    IFCurrentExponentialPopulation: model which represents a leaky intergate
-    and fire model with a exponetial decay curve and based off current.
+    IFCurrentDeltaPopulation: model which represents a leaky integate
+    and fire neural model with current-based delta synapses.
     """
     _model_based_max_atoms_per_core = 256
 
