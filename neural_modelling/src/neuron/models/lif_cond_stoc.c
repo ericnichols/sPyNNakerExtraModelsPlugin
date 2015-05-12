@@ -39,6 +39,34 @@ void provide_machine_timestep( uint16_t microsecs ){
 
 }
 
+//! \brief setup function which needs to check that the magic numebrs work
+//! correctly
+//! \param[in] input_magic_number the input type magic number for the model
+//! \param[in] model_magic_number the model magic number for the model
+//! \return This method returns true if the magic numbers match, false otherwise
+bool neuron_model_check_magic_number(
+        uint32_t input_magic_number, uint32_t model_magic_number){
+
+    // check that the magic numbers are correct
+    bool meet_input_magic_number =
+        input_magic_number == INPUT_CONDUCTANCE_COMPONENT_MAGIC_NUMBER;
+    bool meet_model_magic_number =
+        model_magic_number ==
+        MODEL_COMPONENT_STOCASTIC_INTEGRATE_AND_FIRE_MAGIC_NUMBER;
+
+    if(meet_input_magic_number && meet_model_magic_number){
+        return true;
+    } else{
+        log_error(
+        "Was expecting magic numebrs 0x%x, 0x%x\n
+        "Got magic magic numbers 0x%x, 0x%x",
+        INPUT_CONDUCTANCE_COMPONENT_MAGIC_NUMBER,
+        MODEL_COMPONENT_STOCASTIC_INTEGRATE_AND_FIRE_MAGIC_NUMBER.
+        input_magic_number, model_magic_number);
+        return false;
+    }
+}
+
 
 // simple Leaky I&F ODE - discrete changes elsewhere
 void lif_neuron_closed_form( neuron_pointer_t neuron, REAL V_prev, int32_t neg_refract_timer_now ) {
