@@ -1,7 +1,5 @@
 from spynnaker.pyNN.utilities.constants import POPULATION_BASED_REGIONS
 from spynnaker.pyNN.utilities import utility_calls
-from spynnaker.pyNN.models.utility_models.exp_synapse_param\
-    import write_exp_synapse_param
 from abc import ABCMeta
 from six import add_metaclass
 from abc import abstractmethod
@@ -19,8 +17,7 @@ class AbstractDeltaPopulationVertex(object):
         """
 
     def get_n_synapse_parameters_per_synapse_type(self):
-
-        # There are 2 synapse parameters per synapse type (tau_syn and initial)
+        # Delta synapses require no parameters
         return 0
 
     def get_n_synapse_types(self):
