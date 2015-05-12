@@ -1,10 +1,11 @@
 """
-IFCurrentExponentialPopulation
+IFCurrentDeltaPopulation
 """
 from spynnaker.pyNN.utilities.constants import POPULATION_BASED_REGIONS
 from spynnaker.pyNN.models.abstract_models.abstract_population_vertex import \
     AbstractPopulationVertex
 from spynnaker.pyNN.utilities import constants
+from abstract_delta_population_vertex import AbstractDeltaPopulationVertex
 from spynnaker.pyNN.models.abstract_models.abstract_model_components.\
     abstract_integrate_and_fire_properties \
     import AbstractIntegrateAndFireProperties
@@ -15,8 +16,9 @@ from spynnaker.pyNN.models.neural_properties.neural_parameter \
 from data_specification.enums.data_type import DataType
 
 
-class IFCurrentDeltaPopulation(AbstractIntegrateAndFireProperties,
-                                     AbstractPopulationVertex):
+class IFCurrentDeltaPopulation(AbstractDeltaPopulationVertex,
+                               AbstractIntegrateAndFireProperties,
+                               AbstractPopulationVertex):
     """
     IFCurrentExponentialPopulation: model which represents a leaky intergate
     and fire model with a exponetial decay curve and based off current.
@@ -105,43 +107,17 @@ class IFCurrentDeltaPopulation(AbstractIntegrateAndFireProperties,
         :return:
         """
         return True
-
-    def is_recordable(self):
+    
+    def is_delta_vertex(self):
         """
 
         :return:
         """
         return True
     
-    def get_n_synapse_parameters_per_synapse_type(self):
-
-        # There are no synapse parameters per synapse type
-        return 0
-
-    def get_n_synapse_types(self):
-
-        # There are 2 synapse types (excitatory and inhibitory)
-        return 2
-
-    @staticmethod
-    def get_n_synapse_type_bits():
+    def is_recordable(self):
         """
-        Return the number of bits used to identify the synapse in the synaptic
-        row
-        """
-        return 1
-    
-    def write_synapse_parameters(self, spec, subvertex, vertex_slice):
-        """
-        Write vectors of synapse parameters, one per neuron
-        There is one parameter for each synapse, which is the decay constant
-        for the exponential decay.
 
-        Exponential decay factor calculated as:
-        p11_XXX = exp(-h/tau_syn_XXX)
-        where h is the internal time step in milliseconds (passed in a uSec).
+        :return:
         """
-        # Set the focus to the memory region 3 (synapse parameters):
-        spec.switch_write_focus(
-            region=POPULATION_BASED_REGIONS.SYNAPSE_PARAMS.value)
-        spec.comment("\nEmpty delta synapse parameters for")
+        return True
