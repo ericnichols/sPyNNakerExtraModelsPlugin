@@ -14,8 +14,7 @@ from abc import abstractmethod
 
 
 @add_metaclass(ABCMeta)
-class StocasticIntegrateAndFireComponent(AbstractModelComponent,
-                                         ):
+class StocasticIntegrateAndFireComponent(AbstractModelComponent):
     """
     model component with intergrate and fire properties
     """

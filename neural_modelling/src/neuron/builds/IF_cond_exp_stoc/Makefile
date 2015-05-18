@@ -1,12 +1,7 @@
-APP = $(notdir $(CURDIR))$(EXT)
-EXTRA_SRC_DIR = $(CURDIR)/../../../
-SOURCE_DIR = $(NEURAL_MODELLING_DIRS)/src/neuron
-MODEL_OBJS = $(EXTRA_SRC_DIR)/neuron/models/lif_cond_stoc.o $(SOURCE_DIR)/static_synapses.o
-NEURON_MODEL_H = ../../models/lif_cond_stoc.h
-SYNAPSE_SHAPING_H = $(NEURAL_MODELLING_DIRS)/src/neuron/synapses/exponential_impl.h
+APP = $(notdir $(CURDIR))
+BUILD_DIR = build/
+MODEL_OBJS = $(EXTRA_SRC_DIR)/neuron/models/neuron_model_lif_cond_stoc_impl.o $(SOURCE_DIRS)/neuron/plasticity/synapse_dynamics_static_impl.o
+NEURON_MODEL_H = ../../models/neuron_model_lif_cond_stoc_impl.h
+SYNAPSE_TYPE_H = $(SOURCE_DIRS)/neuron/synapse_types/synapse_types_exponential_impl.h
 
-CFLAGS+= -I$(NEURAL_MODELLING_DIRS)/src
-
-APP_OUTPUT_DIR = $(CURDIR)/../../../../../spynnaker_extra_pynn_models/model_binaries
-
-include $(NEURAL_MODELLING_DIRS)/src/neuron/builds/Makefile.common
+include ../Makefile.common

@@ -72,51 +72,76 @@ class IFConductanceExponentialStochasticPopulation(
         Generate Neuron Parameter data (region 2):
         """
 
-#        typedef struct neuron_t {
-#
-#        // nominally 'fixed' parameters
-#            REAL     V_reset;    // post-spike reset membrane voltage    [mV]
-#            REAL     V_rest;     // membrane resting voltage [mV]
-#            REAL     R_membrane; // membrane resistance [MegaOhm]
-#
-#            REAL		V_rev_E;		// reversal voltage - Excitatory    [mV]
-#            REAL		V_rev_I;		// reversal voltage - Inhibitory    [mV]
-#
-#        // stochastic threshold parameters
-#
-#            REAL     du_th_inv;     // sensitivity of soft threshold to membrane voltage [mV^(-1)] (inverted in python code)
-#            REAL     tau_th_inv;    // time constant for soft threshold [ms^(-1)] (inverted in python code)
-#            REAL     theta;     // soft threshold value  [mV]
-#
-#        // variable-state parameter
-#            REAL     V_membrane; // membrane voltage [mV]
-#
-#        // late entry! Jan 2014 (trickle current)
-#            REAL		I_offset;	// offset current [nA] but take care because actually 'per timestep charge'
-#
-#        // 'fixed' computation parameter - time constant multiplier for closed-form solution
-#            REAL     exp_TC;        // exp( -(machine time step in ms)/(R * C) ) [.]
-#
-#        // for ODE solution only
-#            REAL  	one_over_tauRC; // [kHz!] only necessary if one wants to use ODE solver because allows * and host double prec to calc - UNSIGNED ACCUM & unsigned fract much slower
-#
-#        // refractory time information
-#            int32_t refract_timer; // countdown to end of next refractory period [ms/10] - 3 secs limit do we need more? Jan 2014
-#            int32_t T_refract;  	// refractory time of neuron [ms/10]
-#
-#        #ifdef SIMPLE_COMBINED_GRANULARITY
-#            REAL		eTC[3];				// store the 3 internal timestep to avoid granularity
-#        #endif
-#        #ifdef CORRECT_FOR_THRESHOLD_GRANULARITY
-#            uint8_t	prev_spike_code;  // which period previous spike happened to approximate threshold crossing
-#            REAL		eTC[3];				// store the 3 internal timestep to avoid granularity
-#        #endif
-#        #ifdef CORRECT_FOR_REFRACTORY_GRANULARITY
-#            uint8_t	ref_divisions[2];	// approx corrections for release from refractory period
-#            REAL		eTC[3];				// store the 3 internal timestep to avoid granularity
-#        #endif
-#
-#        } neuron_t;
+        # typedef struct neuron_t {
+        #
+        #     // membrane voltage threshold at which neuron spikes [mV]
+        #     REAL     V_thresh;
+        #
+        #     // post-spike reset membrane voltage [mV]
+        #     REAL     V_reset;
+        #
+        #     // membrane resting voltage [mV]
+        #     REAL     V_rest;
+        #
+        #     // membrane resistance [some multiplier of Ohms, TBD probably
+        #     // MegaOhm]
+        #     REAL     R_membrane;
+        #
+        #     // reversal voltage - Excitatory [mV]
+        #     REAL     V_rev_E;
+        #
+        #     // reversal voltage - Inhibitory [mV]
+        #     REAL     V_rev_I;
+        #
+        #     // membrane voltage [mV]
+        #     REAL     V_membrane;
+        #
+        #     // offset current [nA] but take care because actually 'per
+        #     // timestep charge'
+        #     REAL     I_offset;
+        #
+        #     // 'fixed' computation parameter - time constant multiplier for
+        #     // closed-form solution
+        #     // exp( -(machine time step in ms)/(R * C) ) [.]
+        #     REAL     exp_TC;
+        #
+        #     // [kHz!] only necessary if one wants to use ODE solver because
+        #     //  allows
+        #     // multiply and host double prec to calc
+        #     // - UNSIGNED ACCUM & unsigned fract much slower
+        #     REAL     one_over_tauRC;
+        #
+        #     // countdown to end of next refractory period [ms/10]
+        #     // - 3 secs limit do we need more? Jan 2014
+        #     int32_t  refract_timer;
+        #
+        #     // refractory time of neuron [ms/10]
+        #     int32_t  T_refract;
+        #
+        # #ifdef SIMPLE_COMBINED_GRANULARITY
+        #
+        #     // store the 3 internal timestep to avoid granularity
+        #     REAL     eTC[3];
+        # #endif
+        # #ifdef CORRECT_FOR_THRESHOLD_GRANULARITY
+        #
+        #     // which period previous spike happened to approximate threshold
+        #     // crossing
+        #     uint8_t prev_spike_code;
+        #
+        #     // store the 3 internal timestep to avoid granularity
+        #     REAL     eTC[3];
+        # #endif
+        # #ifdef CORRECT_FOR_REFRACTORY_GRANULARITY
+        #
+        #     // approx corrections for release from refractory period
+        #     uint8_t  ref_divisions[2];
+        #
+        #     // store the 3 internal timestep to avoid granularity
+        #     REAL     eTC[3];
+        # #endif
+        #
+        # } neuron_t;
         return [
             NeuronParameter(self._v_reset, DataType.S1615),
             NeuronParameter(self._v_rest, DataType.S1615),
