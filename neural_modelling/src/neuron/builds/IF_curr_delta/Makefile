@@ -1,7 +1,10 @@
 APP = $(notdir $(CURDIR))
 BUILD_DIR = build/
-MODEL_OBJS = $(SOURCE_DIRS)/neuron/models/neuron_model_lif_curr_impl.o $(SOURCE_DIRS)/neuron/plasticity/synapse_dynamics_static_impl.o
-NEURON_MODEL_H = $(SOURCE_DIRS)/neuron/models/neuron_model_lif_curr_impl.h
-SYNAPSE_TYPE_H = $(EXTRA_SRC_DIR)/neuron/synapse_types/synapse_types_delta_impl.h
+
+MODEL_PATH = $(SOURCE_DIRS)/neuron/models/neuron_model_lif_curr_impl
+SYNAPSE_TYPE_PATH = ../../synapse_types/synapse_types_delta_impl
+SYNAPSE_DYNAMICS_PATH =  $(SOURCE_DIRS)/neuron/plasticity/stdp/synapse_dynamics_static_impl
+
+USES_STDP = FALSE
 
 include ../Makefile.common

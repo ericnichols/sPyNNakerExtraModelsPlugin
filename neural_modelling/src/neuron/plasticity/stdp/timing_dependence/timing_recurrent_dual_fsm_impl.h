@@ -37,7 +37,6 @@ extern plasticity_trace_region_data_t plasticity_trace_region_data;
 static inline post_trace_t timing_get_initial_post_trace() {
     return 0;
 }
-
 //---------------------------------------
 static inline post_trace_t timing_add_post_spike(
         uint32_t time, uint32_t last_time, post_trace_t last_trace) {

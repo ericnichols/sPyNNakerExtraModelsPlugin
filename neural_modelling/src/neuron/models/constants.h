@@ -1,1 +1,5 @@
+// model magic nums
 #define MODEL_COMPONENT_STOCASTIC_INTEGRATE_AND_FIRE_MAGIC_NUMBER 0xAB3
+
+// shaping magic nums
+#define SYNAPSE_SHAPING_DELTA_MAGIC_NUMBER 0xAC2

@@ -1,3 +1,6 @@
+"""
+IFConductanceExponentialStochasticPopulation
+"""
 from spynnaker.pyNN.models.components.neuron_components.\
     abstract_population_vertex import \
     AbstractPopulationVertex
@@ -8,9 +11,10 @@ from spynnaker.pyNN.models.neural_properties.neural_parameter \
     import NeuronParameter
 from spynnaker.pyNN.models.components.\
     synapse_shape_components.exponential_component import ExponentialComponent
+from spynnaker.pyNN.utilities import utility_calls
 
 # extra models imports
-from spynnaker_extra_pynn_models.neural_models.\
+from spynnaker_extra_pynn_models.models.components.model_component.\
     stocastic_intergrate_and_fire_component import \
     StocasticIntegrateAndFireComponent
 
@@ -18,6 +22,9 @@ from spynnaker_extra_pynn_models.neural_models.\
 class IFConductanceExponentialStochasticPopulation(
         ExponentialComponent, ConductanceComponent,
         StocasticIntegrateAndFireComponent, AbstractPopulationVertex):
+    """
+    a conductive exponental stochastic model.
+    """
 
     _model_based_max_atoms_per_core = 60
 
@@ -49,22 +56,34 @@ class IFConductanceExponentialStochasticPopulation(
             timescale_factor=timescale_factor,
             spikes_per_second=spikes_per_second,
             ring_buffer_sigma=ring_buffer_sigma)
-        self._executable_constant = \
-            IFConductanceExponentialStochasticPopulation.CORE_APP_IDENTIFIER
 
     @property
     def model_name(self):
+        """
+        human readable name for the model
+        :return:
+        """
         return "IF_cond_exp_stoc"
 
     @staticmethod
     def set_model_max_atoms_per_core(new_value):
+        """
+        sets the max atoms per core for this model type
+        :param new_value: the new max atoms per core
+        :return: none
+        """
         IFConductanceExponentialStochasticPopulation.\
             _model_based_max_atoms_per_core = new_value
 
     def get_cpu_usage_for_atoms(self, vertex_slice, graph):
         """
         Gets the CPU requirements for a range of atoms
+        :param vertex_slice: the slice of the parttiionabvle vertex that this
+         partitioned vertex needs to implment
+        :param graph: the partitionable graph
         """
+        utility_calls.unused(vertex_slice)
+        utility_calls.unused(graph)
         return 781 * ((vertex_slice.hi_atom - vertex_slice.lo_atom) + 1)
 
     def get_parameters(self):
@@ -162,17 +181,37 @@ class IFConductanceExponentialStochasticPopulation(
             NeuronParameter(self._scaled_t_refract(), DataType.UINT32),
         ]
 
-    def is_conductive(self):
+    def is_conductance(self):
+        """
+        helper method for isinstance
+        :return:
+        """
         return True
 
     def is_exp_vertex(self):
+        """
+        helper method for isinstance
+        :return:
+        """
         return True
 
     def is_integrate_and_fire_vertex(self):
+        """
+        helper method for isinstance
+        :return:
+        """
         return True
 
     def is_population_vertex(self):
+        """
+        helper method for isinstance
+        :return:
+        """
         return True
 
     def is_recordable(self):
+        """
+        helper method for isinstance
+        :return:
+        """
         return True

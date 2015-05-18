@@ -2,7 +2,6 @@ from spynnaker_extra_pynn_models import model_binaries
 
 
 def _init_module():
-    import logging
     import os
     import spynnaker.pyNN
 
@@ -12,13 +11,5 @@ def _init_module():
 
 _init_module()
 
-from spynnaker_extra_pynn_models.neural_models.if_curr_delta \
-    import IFCurrentDeltaPopulation as IF_curr_delta
-from spynnaker_extra_pynn_models.neural_models.if_cond_exp_stoc \
-    import IFConductanceExponentialStochasticPopulation as IF_cond_exp_stoc
-from spynnaker_extra_pynn_models.neural_properties.synapse_dynamics\
-    .dependences.recurrent_time_dependency\
+from spynnaker_extra_pynn_models.neural_properties.synapse_dynamics.dependences.time_dependency.recurrent_time_dependency \
     import RecurrentTimeDependency as RecurrentRule
-from spynnaker_extra_pynn_models.neural_properties.synapse_dynamics\
-    .dependences.vogels_2011_time_dependency\
-    import Vogels2011Rule

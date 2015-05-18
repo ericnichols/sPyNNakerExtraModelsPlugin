@@ -79,4 +79,4 @@ class Vogels2011Rule(AbstractTimeDependency):
         over ride from requires_component_magic_number.py
         :return: returns the magic number aossicated with this component
         """
-        return hashlib.md5("timing_vogels_2011_impl.h").hexdigest()[:8]
+        return hashlib.md5("timing_vogels_2011_impl").hexdigest()[:8]

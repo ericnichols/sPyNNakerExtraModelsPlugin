@@ -95,4 +95,4 @@ class RecurrentTimeDependency(AbstractTimeDependency):
             spec.write_value(data=p, data_type=DataType.UINT16)
 
     def get_component_magic_number_identifiers(self):
-        return hashlib.md5(".h").hexdigest()[:8]
+        return hashlib.md5("timing_recurrent_duel_fsm_impl").hexdigest()[:8]

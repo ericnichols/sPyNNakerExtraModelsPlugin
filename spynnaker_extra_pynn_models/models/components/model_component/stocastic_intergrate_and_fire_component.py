@@ -7,10 +7,10 @@ from spynnaker.pyNN.models.components.model_components.\
     abstract_model_component import AbstractModelComponent
 from spynnaker.pyNN.utilities import utility_calls
 
-from spynnaker_extra_pynn_models import constants
 from abc import ABCMeta
 from six import add_metaclass
 from abc import abstractmethod
+import hashlib
 
 
 @add_metaclass(ABCMeta)
@@ -276,5 +276,4 @@ class StocasticIntegrateAndFireComponent(AbstractModelComponent):
         override from AbstractModelComponent
         :return:
         """
-        return constants.\
-            MODEL_COMPONENT_STOCASTIC_INTEGRATE_AND_FIRE_MAGIC_NUMBER
+        return [hashlib.md5("0").hexdigest()[:8]]

@@ -28,7 +28,7 @@ class DeltaComponent(AbstractSynapseShapeComponent):
         over ridden from AbstractSynapseShapeComponent
         :return:
         """
-        return hashlib.md5("synapse_types_delta_impl.h").hexdigest()[:8]
+        return hashlib.md5("synapse_types_delta_impl").hexdigest()[:8]
 
     @abstractmethod
     def is_delta_shaped(self):
@@ -45,7 +45,8 @@ class DeltaComponent(AbstractSynapseShapeComponent):
         # Delta synapses require no parameters
         return 0
 
-    def get_n_synapse_types(self):
+    @staticmethod
+    def get_n_synapse_types():
         """
         returns how many different types of synapses are supported by the delta
         shaping component
