@@ -119,7 +119,7 @@ projections.append(p.Projection(populations[teacher], populations[excit],
                                 p.OneToOneConnector(weights=weight_to_force_firing, delays=1.0), target='excitatory'))
 #projections.append(p.Projection(populations[stimulus], populations[inhib], p.FixedProbabilityConnector(p_connect=p_exc2inh, weights=baseline_excit_weight, delays=inh_delay_distr), target='excitatory'))
 
-populations[stimulus].record()
+#populations[stimulus].record()
 
 populations[inhib].record_v()
 populations[inhib].record()
@@ -127,7 +127,7 @@ populations[inhib].record()
 populations[excit].record_v()
 populations[excit].record()
 
-populations[teacher].record()
+#populations[teacher].record()
 
 #populations[noise].record_v()
 #populations[noise].record()
@@ -159,22 +159,22 @@ gsyn = None
 spikes = None
 
 v = populations[excit].get_v(compatible_output=True)
-spikesStim = populations[stimulus].getSpikes(compatible_output=True)
+#spikesStim = populations[stimulus].getSpikes(compatible_output=True)
 spikes = populations[excit].getSpikes(compatible_output=True)
 vInhib = populations[inhib].get_v(compatible_output=True)
 spikesInhib = populations[inhib].getSpikes(compatible_output=True)
-spikesTeach = populations[teacher].getSpikes(compatible_output=True)
+#spikesTeach = populations[teacher].getSpikes(compatible_output=True)
 # spikesNoise = populations[noise].getSpikes(compatible_output=True)
 
-if spikesStim != None:
-    pylab.figure()
-    pylab.plot([i[1] for i in spikesStim], [i[0] for i in spikesStim], ".")
-    pylab.xlabel('Time/ms')
-    pylab.ylabel('spikes')
-    pylab.title('Spikes from Source Neurons')
-    #pylab.show()
-else:
-    print "No spikes received"
+#if spikesStim != None:
+#    pylab.figure()
+#    pylab.plot([i[1] for i in spikesStim], [i[0] for i in spikesStim], ".")
+#    pylab.xlabel('Time/ms')
+#    pylab.ylabel('spikes')
+#    pylab.title('Spikes from Source Neurons')
+#    #pylab.show()
+#else:
+#    print "No spikes received"
 
 if spikes != None:
     pylab.figure()
@@ -186,15 +186,15 @@ if spikes != None:
 else:
     print "No spikes received"
 
-if spikesTeach != None:
-    pylab.figure()
-    pylab.plot([i[1] for i in spikesTeach], [i[0] for i in spikesTeach], ".")
-    pylab.xlabel('Time/ms')
-    pylab.ylabel('spikes')
-    pylab.title('Spikes of Teaching Input')
+#if spikesTeach != None:
+#    pylab.figure()
+#    pylab.plot([i[1] for i in spikesTeach], [i[0] for i in spikesTeach], ".")
+#    pylab.xlabel('Time/ms')
+#    pylab.ylabel('spikes')
+#    pylab.title('Spikes of Teaching Input')
     #pylab.show()
-else:
-    print "No spikes received"
+#else:
+#    print "No spikes received"
 
 #if spikesInhib != None:
 #    pylab.figure()

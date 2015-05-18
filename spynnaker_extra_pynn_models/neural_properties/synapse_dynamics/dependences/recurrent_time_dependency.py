@@ -25,12 +25,12 @@ class RecurrentTimeDependency(AbstractTimeDependency):
     def __eq__(self, other):
         if (other is None) or (not isinstance(other, RecurrentTimeDependency)):
             return False
-        return ((self.accumulator_depression_plus_one
-                 == other.accumulator_depression_plus_one)
-                and (self.accumulator_potentiation_minus_one
-                     == other.accumulator_potentiation_minus_one)
-                and (self.mean_pre_window == other.mean_pre_window)
-                and (self.mean_post_window == other.mean_post_window))
+        return ((self.accumulator_depression_plus_one ==
+                 other.accumulator_depression_plus_one) and
+                (self.accumulator_potentiation_minus_one ==
+                 other.accumulator_potentiation_minus_one) and
+                (self.mean_pre_window == other.mean_pre_window) and
+                (self.mean_post_window == other.mean_post_window))
 
     def create_synapse_row_io(self, synaptic_row_header_words,
                               dendritic_delay_fraction):
@@ -54,10 +54,10 @@ class RecurrentTimeDependency(AbstractTimeDependency):
                          data_type=DataType.INT32)
 
         # Convert mean times into machine timesteps
-        mean_pre_timesteps = (float(self.mean_pre_window)
-                              * (1000.0 / float(machineTimeStep)))
-        mean_post_timesteps = (float(self.mean_post_window)
-                               * (1000.0 / float(machineTimeStep)))
+        mean_pre_timesteps = (float(self.mean_pre_window) *
+                              (1000.0 / float(machineTimeStep)))
+        mean_post_timesteps = (float(self.mean_post_window) *
+                               (1000.0 / float(machineTimeStep)))
 
         # Write lookup tables
         self._write_exp_dist_lut(spec, mean_pre_timesteps)
@@ -69,11 +69,14 @@ class RecurrentTimeDependency(AbstractTimeDependency):
 
     @property
     def vertex_executable_suffix(self):
-        return "recurrent_dual_fsm" if self.dual_fsm else "recurrent_pre_stochastic"
+        if self.dual_fsm:
+            return "recurrent_dual_fsm"
+        return "recurrent_pre_stochastic"
 
     @property
     def pre_trace_size_bytes(self):
-        # When using the seperate FSMs, pre-trace contains window length, otherwise it's in the synapse
+        # When using the seperate FSMs, pre-trace contains window length,
+        # otherwise it's in the synapse
         return 2 if self.dual_fsm else 0
 
     def _write_exp_dist_lut(self, spec, mean):
