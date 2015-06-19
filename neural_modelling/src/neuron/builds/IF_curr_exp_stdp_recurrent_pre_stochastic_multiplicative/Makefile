@@ -11,6 +11,5 @@ SYNAPSE_TYPE_H = $(SOURCE_DIRS)/neuron/synapse_types/synapse_types_exponential_i
 TIMING_DEPENDENCE_H = $(EXTRA_SRC_DIR)/neuron/plasticity/stdp/timing_dependence/timing_recurrent_pre_stochastic_impl.h
 WEIGHT_DEPENDENCE_H = $(SOURCE_DIRS)/neuron/plasticity/stdp/weight_dependence/weight_multiplicative_impl.h
 PLASTIC_SYNAPSE_STRUCTURE_H = $(EXTRA_SRC_DIR)/neuron/plasticity/stdp/synapse_structure/synapse_structure_weight_state_accumulator_window_impl.h
-APPLICATION_MAGIC_NUMBER = 0xAC1
 
 include ../Makefile.common
