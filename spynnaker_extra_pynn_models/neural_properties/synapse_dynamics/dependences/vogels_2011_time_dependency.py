@@ -47,7 +47,8 @@ class Vogels2011Rule(AbstractTimeDependency):
                                       "supports 1ms timesteps")
         
         # Write alpha to spec
-        fixed_point_alpha = plasticity_helpers.float_to_fixed(self._alpha, plasticity_helpers.STDP_FIXED_POINT_ONE)
+        fixed_point_alpha = plasticity_helpers.float_to_fixed(
+            self._alpha, plasticity_helpers.STDP_FIXED_POINT_ONE)
         spec.write_value(data=fixed_point_alpha, data_type=DataType.INT32)
         
         # Write lookup table
