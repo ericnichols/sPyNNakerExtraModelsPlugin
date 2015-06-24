@@ -1,5 +1,10 @@
 """
-IFCurrentExponentialPopulation
+IFCurrentExponentialCa2AdaptivePopulation
+
+
+Model from Liu, Y. H., & Wang, X. J. (2001). Spike-frequency adaptation of a
+generalized leaky integrate-and-fire model neuron. Journal of Computational
+Neuroscience, 10(1), 25-45. doi:10.1023/A:1008916026143
 """
 import numpy
 

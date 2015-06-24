@@ -2,6 +2,11 @@
 
 #include <debug.h>
 
+//----------------------------------------------------------------------------
+// Model from Liu, Y. H., & Wang, X. J. (2001). Spike-frequency adaptation of
+// a generalized leaky integrate-and-fire model neuron. Journal of
+// Computational Neuroscience, 10(1), 25-45. doi:10.1023/A:1008916026143
+//----------------------------------------------------------------------------
 // for general machine time steps
 // defaults to 1ms time step i.e. 10 x 1/10ths of a msec
 static uint32_t	refractory_time_update = 10;

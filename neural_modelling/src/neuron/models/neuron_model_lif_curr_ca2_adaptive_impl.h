@@ -3,6 +3,11 @@
 
 #include <neuron/models/neuron_model.h>
 
+//----------------------------------------------------------------------------
+// Model from Liu, Y. H., & Wang, X. J. (2001). Spike-frequency adaptation of
+// a generalized leaky integrate-and-fire model neuron. Journal of
+// Computational Neuroscience, 10(1), 25-45. doi:10.1023/A:1008916026143
+//----------------------------------------------------------------------------
 // only works properly for 1000, 700, 400 microsec timesteps
 //#define CORRECT_FOR_REFRACTORY_GRANULARITY
 
