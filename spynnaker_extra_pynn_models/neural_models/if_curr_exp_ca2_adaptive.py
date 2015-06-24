@@ -17,17 +17,19 @@ from spynnaker.pyNN.models.abstract_models.abstract_model_components.\
     import AbstractIntegrateAndFireProperties
 from spynnaker.pyNN.models.neural_properties.neural_parameter \
     import NeuronParameter
-from spynnaker.pyNN.utilities import (constants, utility_calls)
+from spynnaker.pyNN.utilities import utility_calls
 
 from data_specification.enums.data_type import DataType
 
 
-class IFCurrentExponentialCa2AdaptivePopulation(AbstractExponentialPopulationVertex,
-                                                AbstractIntegrateAndFireProperties,
-                                                AbstractPopulationVertex):
+class IFCurrentExponentialCa2AdaptivePopulation(
+        AbstractExponentialPopulationVertex,
+        AbstractIntegrateAndFireProperties,
+        AbstractPopulationVertex):
     """
-    IFCurrentExponentialCa2AdaptivePopulation: model which represents a leaky intergate
-    and fire model with a exponential decay curve and based off current.
+    IFCurrentExponentialCa2AdaptivePopulation: model which represents a
+    leaky integrate and fire model with a exponential decay curve and based
+    off current.
     """
 
     _model_based_max_atoms_per_core = 256
@@ -37,7 +39,8 @@ class IFCurrentExponentialCa2AdaptivePopulation(AbstractExponentialPopulationVer
                  spikes_per_second, ring_buffer_sigma, constraints=None,
                  label=None, tau_m=20.0, cm=1.0, v_rest=-65.0, v_reset=-65.0,
                  v_thresh=-50.0, tau_syn_E=5.0, tau_syn_I=5.0, tau_refrac=0.1,
-                 i_offset=0, tau_ca2=50.0, i_ca2=0.0, i_alpha=0.1, v_init=None):
+                 i_offset=0, tau_ca2=50.0, i_ca2=0.0, i_alpha=0.1,
+                 v_init=None):
         # Instantiate the parent classes
         AbstractExponentialPopulationVertex.__init__(
             self, n_neurons=n_neurons, tau_syn_E=tau_syn_E,
@@ -56,9 +59,12 @@ class IFCurrentExponentialCa2AdaptivePopulation(AbstractExponentialPopulationVer
             spikes_per_second=spikes_per_second,
             ring_buffer_sigma=ring_buffer_sigma)
 
-        self._tau_ca2 = utility_calls.convert_param_to_numpy(tau_ca2, n_neurons)
-        self._i_ca2 = utility_calls.convert_param_to_numpy(i_ca2, n_neurons)
-        self._i_alpha = utility_calls.convert_param_to_numpy(i_alpha, n_neurons)
+        self._tau_ca2 = utility_calls.convert_param_to_numpy(
+            tau_ca2, n_neurons)
+        self._i_ca2 = utility_calls.convert_param_to_numpy(
+            i_ca2, n_neurons)
+        self._i_alpha = utility_calls.convert_param_to_numpy(
+            i_alpha, n_neurons)
 
     def exp_tau_ca2(self, machine_time_step):
         return numpy.exp(float(-machine_time_step) / (1000.0 * self._tau_ca2))
@@ -78,7 +84,7 @@ class IFCurrentExponentialCa2AdaptivePopulation(AbstractExponentialPopulationVer
         :param new_value:
         :return:
         """
-        IFCurrentExponentialPopulation.\
+        IFCurrentExponentialCa2AdaptivePopulation.\
             _model_based_max_atoms_per_core = new_value
 
     def get_cpu_usage_for_atoms(self, vertex_slice, graph):

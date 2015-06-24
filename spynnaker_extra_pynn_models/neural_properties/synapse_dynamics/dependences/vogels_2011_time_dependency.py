@@ -14,11 +14,12 @@ logger = logging.getLogger(__name__)
 LOOKUP_TAU_SIZE = 256
 LOOKUP_TAU_SHIFT = 0
 
+
 class Vogels2011Rule(AbstractTimeDependency):
 
     def __init__(self, alpha, tau=20.0):
         AbstractTimeDependency.__init__(self)
-        
+
         self._alpha = alpha
         self._tau = tau
 
@@ -45,12 +46,12 @@ class Vogels2011Rule(AbstractTimeDependency):
         if machine_time_step != 1000:
             raise NotImplementedError("STDP LUT generation currently only "
                                       "supports 1ms timesteps")
-        
+
         # Write alpha to spec
         fixed_point_alpha = plasticity_helpers.float_to_fixed(
             self._alpha, plasticity_helpers.STDP_FIXED_POINT_ONE)
         spec.write_value(data=fixed_point_alpha, data_type=DataType.INT32)
-        
+
         # Write lookup table
         plasticity_helpers.write_exp_lut(spec, self.tau,
                                          LOOKUP_TAU_SIZE,
