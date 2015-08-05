@@ -13,7 +13,7 @@ from spynnaker.pyNN.models.neural_properties.synapse_dynamics\
 
 class RecurrentTimeDependency(AbstractTimeDependency):
     def __init__(self, accumulator_depression=-6, accumulator_potentiation=6,
-                 mean_pre_window=35.0, mean_post_window=35.0, dual_fsm=False):
+                 mean_pre_window=35.0, mean_post_window=35.0, dual_fsm=True):
         AbstractTimeDependency.__init__(self)
 
         self.accumulator_depression_plus_one = accumulator_depression + 1
