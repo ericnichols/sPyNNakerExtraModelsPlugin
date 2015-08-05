@@ -31,6 +31,10 @@ extern uint16_t pre_exp_dist_lookup[STDP_FIXED_POINT_ONE];
 extern uint16_t post_exp_dist_lookup[STDP_FIXED_POINT_ONE];
 extern plasticity_trace_region_data_t plasticity_trace_region_data;
 
+static uint32_t last_event_time;
+
+#define ACCUMULATOR_DECAY_SHIFT 11
+
 //---------------------------------------
 // Timing dependence inline functions
 //---------------------------------------
@@ -62,6 +66,8 @@ static inline pre_trace_t timing_add_pre_spike(
     use(&last_time);
     use(&last_trace);
 
+    last_event_time = last_time;
+
     // Pick random number and use to draw from exponential distribution
     uint32_t random = mars_kiss_fixed_point();
     uint16_t window_length = pre_exp_dist_lookup[random];
@@ -80,6 +86,21 @@ static inline update_state_t timing_apply_pre_spike(
     use(&trace);
     use(&last_pre_time);
     use(&last_pre_trace);
+
+    uint32_t time_since_last_event = time - last_event_time;
+    if (previous_state.accumulator > 0) {
+        previous_state.accumulator -=
+            time_since_last_event >> ACCUMULATOR_DECAY_SHIFT;
+        if (previous_state.accumulator < 0) {
+            previous_state.accumulator = 0;
+        }
+    } else if (previous_state.accumulator < 0) {
+        previous_state.accumulator +=
+            time_since_last_event >> ACCUMULATOR_DECAY_SHIFT;
+        if (previous_state.accumulator > 0) {
+            previous_state.accumulator = 0;
+        }
+    }
 
     // Get time of event relative to last post-synaptic event
     uint32_t time_since_last_post = time - last_post_time;
@@ -125,6 +146,10 @@ static inline update_state_t timing_apply_post_spike(
     use(&trace);
     use(&last_post_time);
     use(&last_post_trace);
+
+    if (time > last_event_time) {
+        last_event_time = time;
+    }
 
     // Get time of event relative to last pre-synaptic event
     uint32_t time_since_last_pre = time - last_pre_time;
