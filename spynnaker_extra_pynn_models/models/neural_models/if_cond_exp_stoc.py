@@ -57,6 +57,10 @@ class IFConductanceExponentialStochasticPopulation(
             spikes_per_second=spikes_per_second,
             ring_buffer_sigma=ring_buffer_sigma)
 
+        self._theta = v_thresh
+        self._du_th_inv = 1. / du_th
+        self._tau_th_inv = 1. / tau_th
+
     @property
     def model_name(self):
         """
@@ -87,98 +91,62 @@ class IFConductanceExponentialStochasticPopulation(
         return 781 * ((vertex_slice.hi_atom - vertex_slice.lo_atom) + 1)
 
     def get_parameters(self):
-        """
-        Generate Neuron Parameter data (region 2):
-        """
 
-        # typedef struct neuron_t {
-        #
-        #     // membrane voltage threshold at which neuron spikes [mV]
-        #     REAL     V_thresh;
-        #
-        #     // post-spike reset membrane voltage [mV]
-        #     REAL     V_reset;
-        #
-        #     // membrane resting voltage [mV]
-        #     REAL     V_rest;
-        #
-        #     // membrane resistance [some multiplier of Ohms, TBD probably
-        #     // MegaOhm]
-        #     REAL     R_membrane;
-        #
-        #     // reversal voltage - Excitatory [mV]
-        #     REAL     V_rev_E;
-        #
-        #     // reversal voltage - Inhibitory [mV]
-        #     REAL     V_rev_I;
-        #
-        #     // membrane voltage [mV]
-        #     REAL     V_membrane;
-        #
-        #     // offset current [nA] but take care because actually 'per
-        #     // timestep charge'
-        #     REAL     I_offset;
-        #
-        #     // 'fixed' computation parameter - time constant multiplier for
-        #     // closed-form solution
-        #     // exp( -(machine time step in ms)/(R * C) ) [.]
-        #     REAL     exp_TC;
-        #
-        #     // [kHz!] only necessary if one wants to use ODE solver because
-        #     //  allows
-        #     // multiply and host double prec to calc
-        #     // - UNSIGNED ACCUM & unsigned fract much slower
-        #     REAL     one_over_tauRC;
-        #
-        #     // countdown to end of next refractory period [ms/10]
-        #     // - 3 secs limit do we need more? Jan 2014
-        #     int32_t  refract_timer;
-        #
-        #     // refractory time of neuron [ms/10]
-        #     int32_t  T_refract;
-        #
-        # #ifdef SIMPLE_COMBINED_GRANULARITY
-        #
-        #     // store the 3 internal timestep to avoid granularity
-        #     REAL     eTC[3];
-        # #endif
-        # #ifdef CORRECT_FOR_THRESHOLD_GRANULARITY
-        #
-        #     // which period previous spike happened to approximate threshold
-        #     // crossing
-        #     uint8_t prev_spike_code;
-        #
-        #     // store the 3 internal timestep to avoid granularity
-        #     REAL     eTC[3];
-        # #endif
-        # #ifdef CORRECT_FOR_REFRACTORY_GRANULARITY
-        #
-        #     // approx corrections for release from refractory period
-        #     uint8_t  ref_divisions[2];
-        #
-        #     // store the 3 internal timestep to avoid granularity
-        #     REAL     eTC[3];
-        # #endif
-        #
-        # } neuron_t;
         return [
+            # membrane voltage threshold at which neuron spikes [mV]
+            # REAL     V_thresh;
+            NeuronParameter(self._v_thresh, DataType.S1615),
+
+            # post-spike reset membrane voltage [mV]
+            # REAL     V_reset;
             NeuronParameter(self._v_reset, DataType.S1615),
+
+            # membrane resting voltage [mV]
+            # REAL     V_rest;
             NeuronParameter(self._v_rest, DataType.S1615),
-            NeuronParameter(self.r_membrane(self._machine_time_step),
-                            DataType.S1615),
-            NeuronParameter(self._e_rev_E, DataType.S1615),
-            NeuronParameter(self._e_rev_I, DataType.S1615),
-            NeuronParameter(self._du_th_inv, DataType.S1615),
-            NeuronParameter(self._tau_th_inv, DataType.S1615),
-            NeuronParameter(self._theta, DataType.S1615),
+
+            # membrane resistance
+            # REAL     R_membrane;
+            NeuronParameter(self._r_membrane, DataType.S1615),
+
+            # membrane voltage [mV]
+            # REAL     V_membrane;
             NeuronParameter(self._v_init, DataType.S1615),
-            NeuronParameter(self.ioffset(self._machine_time_step),
+
+            # offset current [nA]
+            # REAL     I_offset;
+            NeuronParameter(self.ioffset, DataType.S1615),
+
+            # 'fixed' computation parameter - time constant multiplier for
+            # closed-form solution
+            # exp( -(machine time step in ms)/(R * C) ) [.]
+            # REAL     exp_TC;
+            NeuronParameter(self._exp_tc(self._machine_time_step),
                             DataType.S1615),
-            NeuronParameter(self.exp_tc(self._machine_time_step),
-                            DataType.S1615),
-            NeuronParameter(self._one_over_tau_rc, DataType.S1615),
-            NeuronParameter(self._refract_timer, DataType.UINT32),
-            NeuronParameter(self._scaled_t_refract(), DataType.UINT32),
+
+            # countdown to end of next refractory period [timesteps]
+            # int32_t  refract_timer;
+            NeuronParameter(self._refract_timer, DataType.INT32),
+
+            # refractory time of neuron [timesteps]
+            # int32_t  T_refract;
+            NeuronParameter(self._tau_refract_timesteps(
+                self._machine_time_step), DataType.INT32),
+
+            # sensitivity of soft threshold to membrane voltage [mV^(-1)]
+            # (inverted in python code)
+            NeuronParameter(self._du_th_inv, DataType.S1615),
+
+            # time constant for soft threshold [ms^(-1)]
+            # (inverted in python code)
+            NeuronParameter(self._tau_th_inv, DataType.S1615),
+
+            # soft threshold value [mV]
+            NeuronParameter(self._theta, DataType.S1615)]
+
+    def get_global_parameters(self):
+        return [
+            NeuronParameter(self._machine_time_step / 100.0, DataType.S1615)
         ]
 
     def is_conductance(self):

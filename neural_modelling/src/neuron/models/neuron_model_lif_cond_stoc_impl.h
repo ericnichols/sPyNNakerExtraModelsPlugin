@@ -3,14 +3,6 @@
 
 #include <neuron/models/neuron_model.h>
 
-// only works properly for 1000, 700, 400 microsec timesteps
-//#define CORRECT_FOR_REFRACTORY_GRANULARITY
-
-//#define CORRECT_FOR_THRESHOLD_GRANULARITY
-
-// 9% slower than standard but inevitably more accurate(?) might over-compensate
-//#define SIMPLE_COMBINED_GRANULARITY
-
 /////////////////////////////////////////////////////////////
 // definition for LIF neuron
 typedef struct neuron_t {
@@ -33,15 +25,6 @@ typedef struct neuron_t {
     // reversal voltage - Inhibitory [mV]
     REAL     V_rev_I;
 
-    // sensitivity of soft threshold to membrane voltage [mV^(-1)] (inverted in python code)
-    REAL     du_th_inv;
-
-    // time constant for soft threshold [ms^(-1)] (inverted in python code)
-    REAL     tau_th_inv;
-
-    // soft threshold value  [mV]
-    REAL     theta;
-
     // membrane voltage [mV]
     REAL     V_membrane;
 
@@ -53,48 +36,33 @@ typedef struct neuron_t {
     // exp( -(machine time step in ms)/(R * C) ) [.]
     REAL     exp_TC;
 
-    // [kHz!] only necessary if one wants to use ODE solver because allows
-    // multiply and host double prec to calc
-    // - UNSIGNED ACCUM & unsigned fract much slower
-    REAL     one_over_tauRC;
-
-    // countdown to end of next refractory period [ms/10]
-    // - 3 secs limit do we need more? Jan 2014
+    // countdown to end of next refractory period [timesteps]
     int32_t  refract_timer;
 
-    // refractory time of neuron [ms/10]
+    // refractory time of neuron [timesteps]
     int32_t  T_refract;
 
-#ifdef SIMPLE_COMBINED_GRANULARITY
+    // sensitivity of soft threshold to membrane voltage [mV^(-1)]
+    // (inverted in python code)
+    REAL     du_th_inv;
 
-    // store the 3 internal timestep to avoid granularity
-    REAL     eTC[3];
-#endif
-#ifdef CORRECT_FOR_THRESHOLD_GRANULARITY
+    // time constant for soft threshold [ms^(-1)] (inverted in python code)
+    REAL     tau_th_inv;
 
-    // which period previous spike happened to approximate threshold crossing
-    uint8_t prev_spike_code;
-
-    // store the 3 internal timestep to avoid granularity
-    REAL     eTC[3];
-#endif
-#ifdef CORRECT_FOR_REFRACTORY_GRANULARITY
-
-    // approx corrections for release from refractory period
-    uint8_t  ref_divisions[2];
-
-    // store the 3 internal timestep to avoid granularity
-    REAL     eTC[3];
-#endif
+    // soft threshold value  [mV]
+    REAL     theta;
 
 } neuron_t;
+
+typedef struct global_neuron_params_t {
+    REAL machine_time_step_ms_div_10;
+} global_neuron_params_t;
 
 //
 neuron_pointer_t neuron_model_lif_cond_stoc_impl_create(
     REAL V_thresh, REAL V_reset, REAL V_rest, REAL V_rev_E, REAL V_rev_I,
-    REAL du_th_inv, REAL tau_th_inv, REAL theta,
-    REAL one_over_tauRC, REAL R, int32_t T_refract, REAL V, REAL I,
-    int32_t refract_timer, REAL exp_tc);
+    REAL R, int32_t T_refract, REAL V, REAL I, int32_t refract_timer,
+    REAL exp_tc, REAL du_th_inv, REAL tau_th_inv, REAL theta);
 
 // function that converts the input into the real value to be used by the neuron
 inline input_t neuron_model_convert_input(input_t input) {
