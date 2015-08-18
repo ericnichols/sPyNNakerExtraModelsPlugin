@@ -12,5 +12,5 @@ setup(
               'spynnaker_extra_pynn_models.neural_properties.synapse_dynamics',
               'spynnaker_extra_pynn_models.neural_properties.synapse_dynamics.dependences'],
     package_data={'spynnaker_extra_pynn_models.model_binaries': ['*.aplx']},
-    install_requires=['SpyNNaker >= 2015.005']
+    install_requires=['SpyNNaker >= 2015.004']
 )
