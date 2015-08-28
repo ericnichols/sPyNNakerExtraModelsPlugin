@@ -32,7 +32,7 @@ class IFCurrentExponentialCa2AdaptivePopulation(
     off current.
     """
 
-    _model_based_max_atoms_per_core = 256
+    _model_based_max_atoms_per_core = 255
 
     # noinspection PyPep8Naming
     def __init__(self, n_neurons, machine_time_step, timescale_factor,
