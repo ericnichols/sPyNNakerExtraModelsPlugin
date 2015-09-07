@@ -1,4 +1,3 @@
-from spynnaker.pyNN.utilities import constants
 from spynnaker.pyNN.models.abstract_models.abstract_population_vertex import \
     AbstractPopulationVertex
 from data_specification.enums.data_type import DataType
@@ -37,7 +36,8 @@ class IFConductanceExponentialStochasticPopulation(
             tau_refrac=tau_refrac)
 
         AbstractPopulationVertex.__init__(
-            self, n_neurons=n_neurons, n_params=14, label=label,
+            self, n_neurons=n_neurons, n_params=14, n_global_params=1,
+            label=label,
             max_atoms_per_core=(IFConductanceExponentialStochasticPopulation
                                 ._model_based_max_atoms_per_core),
             binary="IF_cond_exp_stoc.aplx", constraints=constraints,

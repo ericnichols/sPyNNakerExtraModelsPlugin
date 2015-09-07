@@ -32,7 +32,7 @@ class IFCurrentExponentialCa2AdaptivePopulation(
     off current.
     """
 
-    _model_based_max_atoms_per_core = 256
+    _model_based_max_atoms_per_core = 255
 
     # noinspection PyPep8Naming
     def __init__(self, n_neurons, machine_time_step, timescale_factor,
@@ -50,7 +50,8 @@ class IFCurrentExponentialCa2AdaptivePopulation(
             v_init=v_init, v_reset=v_reset, v_rest=v_rest, v_thresh=v_thresh,
             tau_refrac=tau_refrac)
         AbstractPopulationVertex.__init__(
-            self, n_neurons=n_neurons, n_params=12, label=label,
+            self, n_neurons=n_neurons, n_params=12, n_global_params=0,
+            label=label,
             binary="IF_curr_exp_ca2_adaptive.aplx", constraints=constraints,
             max_atoms_per_core=(IFCurrentExponentialCa2AdaptivePopulation
                                 ._model_based_max_atoms_per_core),
