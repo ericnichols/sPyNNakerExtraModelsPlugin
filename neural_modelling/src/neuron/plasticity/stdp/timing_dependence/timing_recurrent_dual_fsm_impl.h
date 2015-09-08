@@ -33,6 +33,8 @@ extern plasticity_trace_region_data_t plasticity_trace_region_data;
 
 static uint32_t last_event_time;
 
+extern uint32_t last_spike;
+
 #define ACCUMULATOR_DECAY_SHIFT 11
 
 //---------------------------------------
@@ -121,12 +123,13 @@ static inline update_state_t timing_apply_pre_spike(
                 // If accumulator's not going to hit depression limit,
                 // decrement it
                 previous_state.accumulator--;
-                log_debug("\t\t\t\tDecrementing accumulator=%d",
-                          previous_state.accumulator);
+                io_printf(IO_BUF, "Decrementing accumulator=%d at time=%d from spike %u\n",
+                         previous_state.accumulator, time, last_spike);
             } else {
 
                 // Otherwise, reset accumulator and apply depression
-                log_debug("\t\t\t\tApplying depression");
+                io_printf(IO_BUF, "Applying depression with accumulator=%d at time %d from spike %u\n",
+                          previous_state.accumulator, time, last_spike);
 
                 previous_state.accumulator = 0;
                 previous_state.weight_state = weight_one_term_apply_depression(
@@ -171,12 +174,13 @@ static inline update_state_t timing_apply_post_spike(
                 // If accumulator's not going to hit potentiation limit,
                 // increment it
                 previous_state.accumulator++;
-                log_debug("\t\t\t\tIncrementing accumulator=%d",
-                          previous_state.accumulator);
+                io_printf(IO_BUF, "Incrementing accumulator=%d at time=%d from spike %u\n",
+                         previous_state.accumulator, time, last_spike);
             } else {
 
                 // Otherwise, reset accumulator and apply potentiation
-                log_debug("\t\t\t\tApplying potentiation");
+                io_printf(IO_BUF, "Applying potentiation with accumulator=%d at time %d from spike %u\n",
+                          previous_state.accumulator, time, last_spike);
 
                 previous_state.accumulator = 0;
                 previous_state.weight_state =
