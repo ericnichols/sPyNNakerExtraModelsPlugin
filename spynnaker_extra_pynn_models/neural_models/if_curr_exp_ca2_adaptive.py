@@ -32,7 +32,7 @@ class IFCurrentExponentialCa2AdaptivePopulation(
     off current.
     """
 
-    _model_based_max_atoms_per_core = 256
+    _model_based_max_atoms_per_core = 255
 
     # noinspection PyPep8Naming
     def __init__(self, n_neurons, machine_time_step, timescale_factor,
@@ -50,7 +50,8 @@ class IFCurrentExponentialCa2AdaptivePopulation(
             v_init=v_init, v_reset=v_reset, v_rest=v_rest, v_thresh=v_thresh,
             tau_refrac=tau_refrac)
         AbstractPopulationVertex.__init__(
-            self, n_neurons=n_neurons, n_params=12, label=label,
+            self, n_neurons=n_neurons, n_params=12, n_global_params=0,
+            label=label,
             binary="IF_curr_exp_ca2_adaptive.aplx", constraints=constraints,
             max_atoms_per_core=(IFCurrentExponentialCa2AdaptivePopulation
                                 ._model_based_max_atoms_per_core),
@@ -97,29 +98,64 @@ class IFCurrentExponentialCa2AdaptivePopulation(
         return 781 * ((vertex_slice.hi_atom - vertex_slice.lo_atom) + 1)
 
     def get_parameters(self):
-        """
-        Generate Neuron Parameter data (region 2):
-        """
-        # Get the parameters
         return [
+
+            # membrane voltage threshold at which neuron spikes [mV]
+            # REAL    V_thresh;
             NeuronParameter(self._v_thresh, DataType.S1615),
+
+            # post-spike reset membrane voltage [mV]
+            # REAL    V_reset;
             NeuronParameter(self._v_reset, DataType.S1615),
+
+            # membrane resting voltage [mV]
+            # REAL    V_rest;
             NeuronParameter(self._v_rest, DataType.S1615),
-            NeuronParameter(self._i_ca2, DataType.S1615),
-            NeuronParameter(self._i_alpha, DataType.S1615),
-            NeuronParameter(self.r_membrane(self._machine_time_step),
-                            DataType.S1615),
+
+            # membrane resistance
+            # REAL    R_membrane;
+            NeuronParameter(self._r_membrane, DataType.S1615),
+
+            # membrane voltage [mV]
+            # REAL    V_membrane;
             NeuronParameter(self._v_init, DataType.S1615),
-            NeuronParameter(self.ioffset(self._machine_time_step),
+
+            # offset current [nA]
+            # REAL    I_offset;
+            NeuronParameter(self.ioffset, DataType.S1615),
+
+            # 'fixed' computation parameter - time constant multiplier for
+            # closed-form solution
+            # exp( -(machine time step in ms)/(R * C) ) [.]
+            # REAL    exp_TC;
+            NeuronParameter(self._exp_tc(self._machine_time_step),
                             DataType.S1615),
-            NeuronParameter(self.exp_tc(self._machine_time_step),
-                            DataType.S1615),
-            NeuronParameter(self.exp_tau_ca2(self._machine_time_step),
-                            DataType.S1615),
+
+            # countdown to end of next refractory period  [timesteps]
+            # int32_t refract_timer;
             NeuronParameter(self._refract_timer, DataType.INT32),
-            # t refact used to be a uint32 but was changed to int32 to avoid
-            # clash of c and python variable typing.
-            NeuronParameter(self._scaled_t_refract(), DataType.INT32)]
+
+            # refractory time of neuron [timesteps]
+            # int32_t T_refract
+            NeuronParameter(self._tau_refract_timesteps(
+                self._machine_time_step), DataType.INT32),
+
+            # Calcium current
+            # REAL    I_Ca2;
+            NeuronParameter(self._i_ca2, DataType.S1615),
+
+            # Influx of CA2 caused by each spike
+            # REAL    I_alpha;
+            NeuronParameter(self._i_alpha, DataType.S1615),
+
+            # exp ( -(machine time step in ms)/(TauCa) )
+            # REAL    exp_TauCa;
+            NeuronParameter(self.exp_tau_ca2(self._machine_time_step),
+                            DataType.S1615)
+        ]
+
+    def get_global_parameters(self):
+        return []
 
     def is_population_vertex(self):
         """
