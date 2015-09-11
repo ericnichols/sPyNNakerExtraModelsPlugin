@@ -16,8 +16,9 @@ typedef uint16_t pre_trace_t;
 // Include generic plasticity maths functions
 #include "neuron/plasticity/common/maths.h"
 #include "neuron/plasticity/common/stdp_typedefs.h"
+#include "random.h"
 
-#include "random_util.h"
+//#include "random_util.h"
 
 typedef struct {
     int32_t accumulator_depression_plus_one;
@@ -35,6 +36,8 @@ static uint32_t last_event_time;
 
 extern uint32_t last_spike;
 
+extern uint32_t recurrentSeed[4];
+
 #define ACCUMULATOR_DECAY_SHIFT 11
 
 //---------------------------------------
@@ -50,9 +53,8 @@ static inline post_trace_t timing_add_post_spike(
     use(&time);
     use(&last_time);
     use(&last_trace);
-
     // Pick random number and use to draw from exponential distribution
-    uint32_t random = mars_kiss_fixed_point();
+    uint32_t random = mars_kiss64_seed(recurrentSeed) & (STDP_FIXED_POINT_ONE - 1);
     uint16_t window_length = post_exp_dist_lookup[random];
     log_debug("\t\tResetting post-window: random=%d, window_length=%u", random,
               window_length);
@@ -71,7 +73,7 @@ static inline pre_trace_t timing_add_pre_spike(
     last_event_time = last_time;
 
     // Pick random number and use to draw from exponential distribution
-    uint32_t random = mars_kiss_fixed_point();
+    uint32_t random = mars_kiss64_seed(recurrentSeed) & (STDP_FIXED_POINT_ONE - 1);
     uint16_t window_length = pre_exp_dist_lookup[random];
     log_debug("\t\tResetting pre-window: random=%d, window_length=%u", random,
               window_length);
@@ -123,13 +125,13 @@ static inline update_state_t timing_apply_pre_spike(
                 // If accumulator's not going to hit depression limit,
                 // decrement it
                 previous_state.accumulator--;
-                io_printf(IO_BUF, "Decrementing accumulator=%d at time=%d from spike %u\n",
-                         previous_state.accumulator, time, last_spike);
+                //!!io_printf(IO_BUF, "Decrementing accumulator=%d at time=%d from spike %u\n",
+                //!!         previous_state.accumulator, time, last_spike);
             } else {
 
                 // Otherwise, reset accumulator and apply depression
-                io_printf(IO_BUF, "Applying depression with accumulator=%d at time %d from spike %u\n",
-                          previous_state.accumulator, time, last_spike);
+                //!!io_printf(IO_BUF, "Applying depression with accumulator=%d at time %d from spike %u\n",
+                //!!          previous_state.accumulator, time, last_spike);
 
                 previous_state.accumulator = 0;
                 previous_state.weight_state = weight_one_term_apply_depression(
@@ -162,7 +164,8 @@ static inline update_state_t timing_apply_post_spike(
 
     // If spikes don't coincide
     if (time_since_last_pre > 0) {
-
+        io_printf(IO_BUF, "%d\n", last_pre_trace);
+        //!!io_printf(IO_BUF, "Pre-Sp: %d, win close: %d\n", time_since_last_pre, last_pre_trace);
         // If this post-spike has arrived within the last pre window
         if (time_since_last_pre < last_pre_trace) {
 
@@ -174,13 +177,13 @@ static inline update_state_t timing_apply_post_spike(
                 // If accumulator's not going to hit potentiation limit,
                 // increment it
                 previous_state.accumulator++;
-                io_printf(IO_BUF, "Incrementing accumulator=%d at time=%d from spike %u\n",
-                         previous_state.accumulator, time, last_spike);
+                //!!io_printf(IO_BUF, "Acc=%d, pre_t= %d, t=%d src: %u\n",
+                //!!         previous_state.accumulator, last_pre_time, time, last_spike);
             } else {
 
                 // Otherwise, reset accumulator and apply potentiation
-                io_printf(IO_BUF, "Applying potentiation with accumulator=%d at time %d from spike %u\n",
-                          previous_state.accumulator, time, last_spike);
+                //!!io_printf(IO_BUF, "Pot! Acc=%d, pre_t= %d, t=%d src:%u\n",
+                //!!          previous_state.accumulator, last_pre_time, time, last_spike);
 
                 previous_state.accumulator = 0;
                 previous_state.weight_state =

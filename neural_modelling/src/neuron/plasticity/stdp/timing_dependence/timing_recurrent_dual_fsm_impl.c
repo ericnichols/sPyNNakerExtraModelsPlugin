@@ -1,4 +1,5 @@
 #include "timing_recurrent_dual_fsm_impl.h"
+#include "random.h"
 
 //---------------------------------------
 // Globals
@@ -9,6 +10,7 @@ uint16_t post_exp_dist_lookup[STDP_FIXED_POINT_ONE];
 
 // Global plasticity parameter data
 plasticity_trace_region_data_t plasticity_trace_region_data;
+uint32_t recurrentSeed[4];
 
 //---------------------------------------
 // Functions
@@ -16,7 +18,7 @@ plasticity_trace_region_data_t plasticity_trace_region_data;
 uint32_t *timing_initialise(address_t address) {
 
     log_info("timing_initialise: starting");
-    log_info("\tRecurrent dual-FSM STDP rule");
+    log_info("\tRecurrent dual-FSM STDP Rule");
 
     // Copy plasticity region data from address
     // **NOTE** this seems somewhat safer than relying on sizeof
@@ -38,8 +40,11 @@ uint32_t *timing_initialise(address_t address) {
         &address[2], STDP_FIXED_POINT_ONE, (int16_t*) &pre_exp_dist_lookup[0]);
     lut_address = maths_copy_int16_lut(
         lut_address, STDP_FIXED_POINT_ONE, (int16_t*) &post_exp_dist_lookup[0]);
-
+	memcpy(recurrentSeed, lut_address, 4 * sizeof(uint32_t));
+	lut_address += 4;
     log_info("timing_initialise: completed successfully");
+	validate_mars_kiss64_seed(recurrentSeed);
 
+	log_info("Seeds: %d, %d, %d, %d", recurrentSeed[0], recurrentSeed[1], recurrentSeed[2], recurrentSeed[3]);
     return lut_address;
 }
