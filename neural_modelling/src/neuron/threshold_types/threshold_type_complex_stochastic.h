@@ -2,6 +2,8 @@
 #define _THRESHOLD_TYPE_STOCHASTIC_H_
 
 #include <neuron/threshold_types/threshold_type.h>
+#include <random.h>
+#include <stdfix-exp.h>
 
 #define PROB_SATURATION 0.8k
 
@@ -26,7 +28,25 @@ typedef struct threshold_type_t {
 static inline bool threshold_type_is_above_threshold(state_t value,
                         threshold_type_pointer_t threshold_type) {
 
-    return REAL_COMPARE(value, >=, threshold_type->threshold_value);
+    UREAL random_number = ukbits(mars_kiss64_simp() & 0xFFFF);
+
+    REAL exponent = (value - threshold_type->theta)
+                    * threshold_type->du_th_inv;
+
+    // if exponent is large, further calculation is unnecessary
+    // (result --> prob_saturation).
+    UREAL result;
+    if (exponent < 5.0k) {
+        REAL hazard = expk(exponent) * threshold_type->tau_th_inv;
+        result = (1. - expk(-hazard *
+                            threshold_type->machine_time_step_ms_div_10)) *
+                  PROB_SATURATION;
+
+    } else {
+        result = PROB_SATURATION;
+    }
+
+    return REAL_COMPARE(result, >=, random_number);
 }
 
 #endif // _THRESHOLD_TYPE_STOCHASTIC_H_
