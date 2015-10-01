@@ -12,12 +12,13 @@ def _init_module():
 
 _init_module()
 
-from spynnaker_extra_pynn_models.neural_models.if_curr_delta \
-    import IFCurrentDeltaPopulation as IF_curr_delta
-from spynnaker_extra_pynn_models.neural_models.if_curr_exp_ca2_adaptive \
-    import IFCurrentExponentialCa2AdaptivePopulation as IF_curr_exp_ca2_adaptive
-from spynnaker_extra_pynn_models.neural_models.if_cond_exp_stoc \
-    import IFConductanceExponentialStochasticPopulation as IF_cond_exp_stoc
+
+from spynnaker_extra_pynn_models.neuron.builds.if_curr_delta \
+    import IFCurrDelta as IF_curr_delta
+from spynnaker_extra_pynn_models.neuron.builds.if_curr_exp_ca2_adaptive \
+    import IFCurrExpCa2Adaptive as IF_curr_exp_ca2_adaptive
+from spynnaker_extra_pynn_models.neuron.builds.if_cond_exp_stoc \
+    import IFCondExpStoc as IF_cond_exp_stoc
 from spynnaker_extra_pynn_models.neural_properties.synapse_dynamics\
     .dependences.recurrent_time_dependency\
     import RecurrentTimeDependency as RecurrentRule

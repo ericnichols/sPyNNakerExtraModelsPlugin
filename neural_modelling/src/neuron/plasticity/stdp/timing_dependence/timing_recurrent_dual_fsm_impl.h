@@ -7,6 +7,8 @@
 typedef uint16_t post_trace_t;
 typedef uint16_t pre_trace_t;
 
+#include "../synapse_structure/synapse_structure_weight_accumulator_impl.h"
+
 #include "neuron/plasticity/stdp/timing_dependence/timing.h"
 #include "neuron/plasticity/stdp/weight_dependence/weight_one_term.h"
 

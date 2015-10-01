@@ -18,7 +18,7 @@ typedef struct threshold_type_t {
     REAL     tau_th_inv;
 
     // soft threshold value  [mV]
-    REAL     theta;
+    REAL     v_thresh;
 
     //
     REAL     machine_time_step_ms_div_10;
@@ -30,7 +30,7 @@ static inline bool threshold_type_is_above_threshold(state_t value,
 
     UREAL random_number = ukbits(mars_kiss64_simp() & 0xFFFF);
 
-    REAL exponent = (value - threshold_type->theta)
+    REAL exponent = (value - threshold_type->v_thresh)
                     * threshold_type->du_th_inv;
 
     // if exponent is large, further calculation is unnecessary
