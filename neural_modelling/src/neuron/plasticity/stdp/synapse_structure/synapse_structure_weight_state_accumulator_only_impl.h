@@ -17,6 +17,8 @@ typedef struct update_state_t {
     weight_state_t weight_state;
 
     int32_t accumulator;
+	bool pre_waiting_post;
+	uint32_t longest_post_pre_window_closing_time;
 } update_state_t;
 
 typedef plastic_synapse_t final_state_t;
@@ -33,6 +35,8 @@ static inline update_state_t synapse_structure_get_update_state(
     update_state.weight_state = weight_get_initial(synaptic_word.weight,
                                                    synapse_type);
     update_state.accumulator = (int32_t) synaptic_word.accumulator;
+	update_state.pre_waiting_post = true;
+	update_state.longest_post_pre_window_closing_time = 0;
     return update_state;
 }
 
