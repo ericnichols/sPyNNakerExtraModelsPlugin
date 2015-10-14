@@ -66,7 +66,7 @@ static inline index_t _in_offset(index_t neuron_index) {
 //! \return nothing
 static inline void synapse_types_shape_input(
         input_t *input_buffers, index_t neuron_index,
-        synapse_param_t** parameters) {
+        synapse_param_t* parameters) {
     use(parameters);
     input_buffers[_ex_offset(neuron_index)] = 0;
     input_buffers[_in_offset(neuron_index)] = 0;
@@ -85,7 +85,7 @@ static inline void synapse_types_shape_input(
 //! \return None
 static inline void synapse_types_add_neuron_input(
         input_t *input_buffers, index_t synapse_type_index,
-        index_t neuron_index, synapse_param_t** parameters, input_t input) {
+        index_t neuron_index, synapse_param_t* parameters, input_t input) {
     use(parameters);
     input_buffers[synapse_types_get_input_buffer_index(synapse_type_index,
         neuron_index)] += input;
