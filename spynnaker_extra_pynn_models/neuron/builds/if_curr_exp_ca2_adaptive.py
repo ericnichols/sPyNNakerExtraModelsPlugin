@@ -58,8 +58,8 @@ class IFCurrExpCa2Adaptive(AbstractPopulationVertex):
         AbstractPopulationVertex.__init__(
             self, n_neurons=n_neurons, binary="IF_curr_exp_ca2_adaptive.aplx",
             label=label,
-            max_atoms_per_core=(
-                IFCurrExpCa2Adaptive._model_based_max_atoms_per_core),
+            max_atoms_per_core=
+            IFCurrExpCa2Adaptive._model_based_max_atoms_per_core,
             machine_time_step=machine_time_step,
             timescale_factor=timescale_factor,
             spikes_per_second=spikes_per_second,
