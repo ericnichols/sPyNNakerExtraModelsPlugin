@@ -7,6 +7,7 @@
 typedef int16_t post_trace_t;
 typedef int16_t pre_trace_t;
 
+#include "neuron/plasticity/stdp/synapse_structure/synapse_structure_weight_impl.h"
 #include "neuron/plasticity/stdp/timing_dependence/timing.h"
 #include "neuron/plasticity/stdp/weight_dependence/weight_one_term.h"
 
@@ -97,32 +98,32 @@ static inline update_state_t timing_apply_pre_spike(
   uint32_t time_since_last_post = time - last_post_time;
   int32_t exponential_decay = DECAY_LOOKUP_TAU(time_since_last_post);
   int32_t decayed_o1 = STDP_FIXED_MUL_16X16(last_post_trace, exponential_decay) - plasticity_trace_region_data.alpha;
-  
-  log_debug("\t\t\ttime_since_last_post_event=%u, decayed_o1=%d\n", 
+
+  log_debug("\t\t\ttime_since_last_post_event=%u, decayed_o1=%d\n",
                           time_since_last_post, decayed_o1);
-  
+
   // Apply potentiation to state (which is a weight_state)
   return weight_one_term_apply_potentiation(previous_state, decayed_o1);
-  
+
 }
 //---------------------------------------
 static inline update_state_t timing_apply_post_spike(
     uint32_t time, post_trace_t trace, uint32_t last_pre_time,
     pre_trace_t last_pre_trace, uint32_t last_post_time,
-    post_trace_t last_post_trace, update_state_t previous_state) 
+    post_trace_t last_post_trace, update_state_t previous_state)
 {
   use(&trace);
   use(last_post_time);
   use(&last_post_trace);
-  
+
   // Get time of event relative to last pre-synaptic event
   uint32_t time_since_last_pre = time - last_pre_time;
   int32_t exponential_decay = DECAY_LOOKUP_TAU(time_since_last_pre);
   int32_t decayed_r1 = STDP_FIXED_MUL_16X16(last_pre_trace, exponential_decay);
 
-  log_debug("\t\t\ttime_since_last_pre_event=%u, decayed_r1=%d\n", 
+  log_debug("\t\t\ttime_since_last_pre_event=%u, decayed_r1=%d\n",
                           time_since_last_pre, decayed_r1);
-  
+
   // Apply potentiation to state (which is a weight_state)
   return weight_one_term_apply_potentiation(previous_state, decayed_r1);
 }
