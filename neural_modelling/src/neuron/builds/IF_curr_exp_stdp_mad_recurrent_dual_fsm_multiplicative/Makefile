@@ -1,15 +1,15 @@
 APP = $(notdir $(CURDIR))
 BUILD_DIR = build/
-MODEL_OBJS = $(SOURCE_DIRS)/neuron/models/neuron_model_lif_curr_impl.o \
-             $(SOURCE_DIRS)/neuron/plasticity/common/post_events.o \
-             $(SOURCE_DIRS)/neuron/plasticity/stdp/synapse_dynamics_stdp_mad_impl.o \
-             $(SOURCE_DIRS)/neuron/plasticity/common/maths.o \
-             $(EXTRA_SRC_DIR)/neuron/plasticity/stdp/timing_dependence/timing_recurrent_dual_fsm_impl.o \
-             $(SOURCE_DIRS)/neuron/plasticity/stdp/weight_dependence/weight_multiplicative_impl.o
-NEURON_MODEL_H = $(SOURCE_DIRS)/neuron/models/neuron_model_lif_curr_impl.h
+
+NEURON_MODEL = $(SOURCE_DIRS)/neuron/models/neuron_model_lif_impl.o
+NEURON_MODEL_H = $(SOURCE_DIRS)/neuron/models/neuron_model_lif_impl.h
+INPUT_TYPE_H = $(SOURCE_DIRS)/neuron/input_types/input_type_current.h
+THRESHOLD_TYPE_H = $(SOURCE_DIRS)/neuron/threshold_types/threshold_type_static.h
 SYNAPSE_TYPE_H = $(SOURCE_DIRS)/neuron/synapse_types/synapse_types_exponential_impl.h
+SYNAPSE_DYNAMICS = $(SOURCE_DIRS)/neuron/plasticity/stdp/synapse_dynamics_stdp_mad_impl.o
+TIMING_DEPENDENCE = $(EXTRA_SRC_DIR)/neuron/plasticity/stdp/timing_dependence/timing_recurrent_dual_fsm_impl.o
 TIMING_DEPENDENCE_H = $(EXTRA_SRC_DIR)/neuron/plasticity/stdp/timing_dependence/timing_recurrent_dual_fsm_impl.h
+WEIGHT_DEPENDENCE = $(SOURCE_DIRS)/neuron/plasticity/stdp/weight_dependence/weight_multiplicative_impl.o
 WEIGHT_DEPENDENCE_H = $(SOURCE_DIRS)/neuron/plasticity/stdp/weight_dependence/weight_multiplicative_impl.h
-PLASTIC_SYNAPSE_STRUCTURE_H = $(EXTRA_SRC_DIR)/neuron/plasticity/stdp/synapse_structure/synapse_structure_weight_state_accumulator_only_impl.h
 
 include ../Makefile.common

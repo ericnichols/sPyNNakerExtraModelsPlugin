@@ -65,15 +65,14 @@ class RecurrentTimeDependency(AbstractTimeDependency):
         self._write_exp_dist_lut(spec, mean_post_timesteps)
 
         # Write random seeds
-        spec.write_value(data=self.rng.randint(0xFFFFFFFF),
+        spec.write_value(data=self.rng.randint(0x7FFFFFFF),
                          data_type=DataType.UINT32)
-        spec.write_value(data=self.rng.randint(0xFFFFFFFF),
+        spec.write_value(data=self.rng.randint(0x7FFFFFFF),
                          data_type=DataType.UINT32)
-        spec.write_value(data=self.rng.randint(0xFFFFFFFF),
+        spec.write_value(data=self.rng.randint(0x7FFFFFFF),
                          data_type=DataType.UINT32)
-        spec.write_value(data=self.rng.randint(0xFFFFFFFF),
+        spec.write_value(data=self.rng.randint(0x7FFFFFFF),
                          data_type=DataType.UINT32) 
-        
         
 
     @property
