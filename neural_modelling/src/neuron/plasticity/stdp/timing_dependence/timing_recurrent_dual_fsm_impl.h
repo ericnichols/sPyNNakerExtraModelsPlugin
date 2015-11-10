@@ -103,6 +103,8 @@ static inline update_state_t timing_apply_pre_spike(
     use(&last_pre_time);
     use(&last_pre_trace);
 
+    io_printf(IO_BUF, "delayed_time= %d	last_pre_time= %d	last_post_time=%d	pre_trace= %d	last_pre_trace= %d ",
+         time, last_pre_time, last_post_time, trace, last_pre_trace);
 	// Decay accum value so that long periods without spikes cause it to forget:
     uint32_t time_since_last_event = time - last_event_time;
     if (previous_state.accumulator > 0) {
@@ -129,6 +131,7 @@ static inline update_state_t timing_apply_pre_spike(
 
 	if (time <= previous_state.longest_post_pre_window_closing_time) {
 		// The pre-spike has occurred inside a post window.
+                io_printf(IO_BUF, "win_cls: %u", previous_state.longest_post_pre_window_closing_time);
 
         // Get time of event relative to last post-synaptic event
         uint32_t time_since_last_post = time - last_post_time;
@@ -142,12 +145,13 @@ static inline update_state_t timing_apply_pre_spike(
                 // If accumulator's not going to hit depression limit,
                 // decrement it
                 previous_state.accumulator--;
-                io_printf(IO_BUF, "- A=%d t= %d lastPostTime: %d\n",
-                         previous_state.accumulator, time, last_post_time);
+                io_printf(IO_BUF, "	-");
+                //SDXXio_printf(IO_BUF, "		- A=%d t= %d lastPostTime: %d\n",
+                //SDXX         previous_state.accumulator, time, last_post_time);
             } else {
 
                 // Otherwise, reset accumulator and apply depression
-                io_printf(IO_BUF, "DEP! A=%d t= %d lastPost=%d\n",
+                io_printf(IO_BUF, "		DEP! A=%d t= %d lastPost=%d\n",
                         previous_state.accumulator, time, last_post_time);
 
                 previous_state.accumulator = 0;
@@ -162,6 +166,7 @@ static inline update_state_t timing_apply_pre_spike(
 	previous_state.pre_waiting_post = true;
 	//io_printf(IO_BUF, "window status: %u\n", previous_state.pre_waiting_post);
 
+    io_printf(IO_BUF, "\n");
     return previous_state;
 }
 
@@ -191,6 +196,8 @@ static inline update_state_t timing_apply_post_spike(
     uint16_t window_length = post_exp_dist_lookup[random];
 	uint32_t this_window_close_time = time + window_length;
 	
+        io_printf(IO_BUF, "delayed_time= %d	last_pre_time= %d	last_post_time= %d	last_pre_trace= %d",
+           time, last_pre_time, last_post_time, last_pre_trace);
 	// Check if this post-spike extends the open window:
 	if (previous_state.longest_post_pre_window_closing_time < this_window_close_time)
 		previous_state.longest_post_pre_window_closing_time = this_window_close_time;
@@ -229,12 +236,13 @@ static inline update_state_t timing_apply_post_spike(
                 // If accumulator's not going to hit potentiation limit,
                 // increment it
                 previous_state.accumulator++;
-                io_printf(IO_BUF, "+ A= %d t= %d, lastPreTime= %d\n",
-                         previous_state.accumulator, time, last_pre_time);
+                io_printf(IO_BUF, "	+");
+                //SDXXio_printf(IO_BUF, "		+ A= %d t= %d, lastPreTime= %d\n",
+                //SDXX         previous_state.accumulator, time, last_pre_time);
             } else {
 
                 // Otherwise, reset accumulator and apply potentiation
-                io_printf(IO_BUF, "Pot! A= %d t= %d, lastPreTime= %d\n",
+                io_printf(IO_BUF, "		Pot! A= %d t= %d, lastPreTime= %d\n",
                           previous_state.accumulator, time, last_pre_time);
                 previous_state.accumulator = 0;
                 previous_state.weight_state =
@@ -244,6 +252,7 @@ static inline update_state_t timing_apply_post_spike(
         }
     }
 
+    io_printf(IO_BUF, "\n");
     return previous_state;
 }
 
