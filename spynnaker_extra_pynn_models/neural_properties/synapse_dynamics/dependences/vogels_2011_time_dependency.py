@@ -4,7 +4,7 @@ from spynnaker.pyNN.models.neural_properties.synapse_dynamics.abstract_rules.\
     abstract_time_dependency import AbstractTimeDependency
 from spynnaker.pyNN.models.neural_properties.synapse_dynamics.\
     plastic_weight_synapse_row_io import PlasticWeightSynapseRowIo
-from spynnaker.pyNN.models.neural_properties.synapse_dynamics\
+from spynnaker.pyNN.models.neuron.plasticity.stdp.common import plasticity_helpers
     import plasticity_helpers
 
 import logging

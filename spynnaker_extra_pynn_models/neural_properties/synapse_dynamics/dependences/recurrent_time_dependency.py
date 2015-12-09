@@ -7,7 +7,7 @@ from spynnaker.pyNN.models.neural_properties.synapse_dynamics.abstract_rules.\
 from spynnaker.pyNN.models.neural_properties.synapse_dynamics.\
     plastic_weight_control_synapse_row_io\
     import PlasticWeightControlSynapseRowIo
-from spynnaker.pyNN.models.neural_properties.synapse_dynamics\
+from spynnaker.pyNN.models.neuron.plasticity.stdp.common import plasticity_helpers
     import plasticity_helpers
 
 
