@@ -1,4 +1,5 @@
-import math, numpy, sys
+import math
+import numpy
 
 from data_specification.enums.data_type import DataType
 
@@ -12,8 +13,10 @@ from spynnaker.pyNN.models.neural_properties.synapse_dynamics\
 
 
 class RecurrentTimeDependency(AbstractTimeDependency):
-    def __init__(self, accumulator_depression=-6, accumulator_potentiation=6,
-                 mean_pre_window=35.0, mean_post_window=35.0, dual_fsm=True, seed=None):
+    def __init__(
+            self, accumulator_depression=-6, accumulator_potentiation=6,
+            mean_pre_window=35.0, mean_post_window=35.0, dual_fsm=True,
+            seed=None):
         AbstractTimeDependency.__init__(self)
 
         self.accumulator_depression_plus_one = accumulator_depression + 1
@@ -21,7 +24,7 @@ class RecurrentTimeDependency(AbstractTimeDependency):
         self.mean_pre_window = mean_pre_window
         self.mean_post_window = mean_post_window
         self.dual_fsm = dual_fsm
-        self.rng=numpy.random.RandomState(seed)
+        self.rng = numpy.random.RandomState(seed)
 
     def __eq__(self, other):
         if (other is None) or (not isinstance(other, RecurrentTimeDependency)):
@@ -41,7 +44,9 @@ class RecurrentTimeDependency(AbstractTimeDependency):
     def get_params_size_bytes(self):
         # 2 * 32-bit parameters
         # 2 * LUTS with STDP_FIXED_POINT_ONE * 16-bit entries
-        return (4 * 2) + (2 * (2 * plasticity_helpers.STDP_FIXED_POINT_ONE)) + 16
+        # 4 seeds
+        return (
+            (4 * 2) + (2 * (2 * plasticity_helpers.STDP_FIXED_POINT_ONE)) + 16)
 
     def is_time_dependance_rule_part(self):
         return True
@@ -72,8 +77,7 @@ class RecurrentTimeDependency(AbstractTimeDependency):
         spec.write_value(data=self.rng.randint(0x7FFFFFFF),
                          data_type=DataType.UINT32)
         spec.write_value(data=self.rng.randint(0x7FFFFFFF),
-                         data_type=DataType.UINT32) 
-        
+                         data_type=DataType.UINT32)
 
     @property
     def num_terms(self):
@@ -87,12 +91,13 @@ class RecurrentTimeDependency(AbstractTimeDependency):
 
     @property
     def pre_trace_size_bytes(self):
-        # When using the seperate FSMs, pre-trace contains window length,
+        # When using the separate FSMs, pre-trace contains window length,
         # otherwise it's in the synapse
         return 2 if self.dual_fsm else 0
 
     def _write_exp_dist_lut(self, spec, mean):
         for x in range(plasticity_helpers.STDP_FIXED_POINT_ONE):
+
             # Calculate inverse CDF
             x_float = float(x) / float(plasticity_helpers.STDP_FIXED_POINT_ONE)
             p_float = math.log(1.0 - x_float) * -mean
