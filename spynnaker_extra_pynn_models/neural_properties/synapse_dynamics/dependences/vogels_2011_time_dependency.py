@@ -1,10 +1,10 @@
 from data_specification.enums.data_type import DataType
 
-from spynnaker.pyNN.models.neural_properties.synapse_dynamics.abstract_rules.\
-    abstract_time_dependency import AbstractTimeDependency
-from spynnaker.pyNN.models.neural_properties.synapse_dynamics.\
-    plastic_weight_synapse_row_io import PlasticWeightSynapseRowIo
-from spynnaker.pyNN.models.neuron.plasticity.stdp.common import plasticity_helpers
+from spynnaker.pyNN.models.neuron.plasticity.stdp.timing_dependence\
+    .abstract_timing_dependence import AbstractTimingDependence
+from spynnaker.pyNN.models.neuron.plasticity.stdp.synapse_structure\
+    .synapse_structure_weight_only import SynapseStructureWeightOnly
+from spynnaker.pyNN.models.neuron.plasticity.stdp.common \
     import plasticity_helpers
 
 import logging
@@ -15,32 +15,43 @@ LOOKUP_TAU_SIZE = 256
 LOOKUP_TAU_SHIFT = 0
 
 
-class Vogels2011Rule(AbstractTimeDependency):
+class Vogels2011Rule(AbstractTimingDependence):
 
     def __init__(self, alpha, tau=20.0):
-        AbstractTimeDependency.__init__(self)
+        AbstractTimingDependence.__init__(self)
 
         self._alpha = alpha
         self._tau = tau
 
-    def __eq__(self, other):
+        self._synapse_structure = SynapseStructureWeightOnly()
+
+    @property
+    def tau(self):
+        return self._tau
+
+    def is_same_as(self, other):
         if (other is None) or (not isinstance(other, Vogels2011Rule)):
             return False
-        return ((self._tau == other._tau))
+        return ((self._tau == other._tau) and (self._alpha == other._alpha))
 
-    def create_synapse_row_io(
-            self, synaptic_row_header_words, dendritic_delay_fraction):
-        return PlasticWeightSynapseRowIo(
-            synaptic_row_header_words, dendritic_delay_fraction)
+    @property
+    def vertex_executable_suffix(self):
+        return "vogels_2011"
 
-    def get_params_size_bytes(self):
+    @property
+    def pre_trace_n_bytes(self):
+
+        # Trace entries consist of a single 16-bit number
+        return 2
+
+    def get_parameters_sdram_usage_in_bytes(self):
         return 4 + (2 * LOOKUP_TAU_SIZE)
 
-    def is_time_dependance_rule_part(self):
-        return True
+    @property
+    def n_weight_terms(self):
+        return 1
 
-    def write_plastic_params(self, spec, machine_time_step, weight_scales,
-                             global_weight_scale):
+    def write_parameters(self, spec, machine_time_step, weight_scales):
 
         # Check timestep is valid
         if machine_time_step != 1000:
@@ -53,23 +64,9 @@ class Vogels2011Rule(AbstractTimeDependency):
         spec.write_value(data=fixed_point_alpha, data_type=DataType.INT32)
 
         # Write lookup table
-        plasticity_helpers.write_exp_lut(spec, self.tau,
-                                         LOOKUP_TAU_SIZE,
-                                         LOOKUP_TAU_SHIFT)
+        plasticity_helpers.write_exp_lut(
+            spec, self.tau, LOOKUP_TAU_SIZE, LOOKUP_TAU_SHIFT)
 
     @property
-    def num_terms(self):
-        return 1
-
-    @property
-    def vertex_executable_suffix(self):
-        return "vogels_2011"
-
-    @property
-    def pre_trace_size_bytes(self):
-        # Trace entries consist of a single 16-bit number
-        return 2
-
-    @property
-    def tau(self):
-        return self._tau
+    def synaptic_structure(self):
+        return self._synapse_structure
