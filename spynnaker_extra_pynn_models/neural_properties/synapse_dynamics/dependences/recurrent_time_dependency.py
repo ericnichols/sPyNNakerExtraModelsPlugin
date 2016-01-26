@@ -32,6 +32,14 @@ class RecurrentTimeDependency(AbstractTimeDependency):
                 (self.mean_pre_window == other.mean_pre_window) and
                 (self.mean_post_window == other.mean_post_window))
 
+    def __ne__(self, other):
+        """
+        comparison  method for comparing RecurrentTimeDependency
+        :param other: instance of RecurrentTimeDependency
+        :return:
+        """
+        return not self.__eq__(other)
+
     def create_synapse_row_io(self, synaptic_row_header_words,
                               dendritic_delay_fraction):
         return PlasticWeightControlSynapseRowIo(

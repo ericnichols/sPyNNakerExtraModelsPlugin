@@ -26,7 +26,15 @@ class Vogels2011Rule(AbstractTimeDependency):
     def __eq__(self, other):
         if (other is None) or (not isinstance(other, Vogels2011Rule)):
             return False
-        return ((self._tau == other._tau))
+        return self._tau == other._tau
+
+    def __ne__(self, other):
+        """
+        comparison  method for comparing Vogels2011Rule
+        :param other: instance of Vogels2011Rule
+        :return:
+        """
+        return not self.__eq__(other)
 
     def create_synapse_row_io(
             self, synaptic_row_header_words, dendritic_delay_fraction):
