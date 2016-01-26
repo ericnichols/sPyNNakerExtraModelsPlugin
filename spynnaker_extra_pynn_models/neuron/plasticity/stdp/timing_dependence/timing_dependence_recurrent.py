@@ -11,7 +11,7 @@ from spynnaker.pyNN.models.neuron.plasticity.stdp.common \
     import plasticity_helpers
 
 
-class RecurrentTimeDependency(AbstractTimingDependence):
+class TimingDependenceRecurrent(AbstractTimingDependence):
 
     def __init__(
             self, accumulator_depression=-6, accumulator_potentiation=6,
@@ -28,7 +28,8 @@ class RecurrentTimeDependency(AbstractTimingDependence):
         self._synapse_structure = SynapseStructureWeightAccumulator()
 
     def is_same_as(self, other):
-        if (other is None) or (not isinstance(other, RecurrentTimeDependency)):
+        if (other is None) or (not isinstance(
+                other, TimingDependenceRecurrent)):
             return False
         return ((self.accumulator_depression_plus_one ==
                  other.accumulator_depression_plus_one) and

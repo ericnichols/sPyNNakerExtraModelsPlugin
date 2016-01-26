@@ -15,7 +15,7 @@ LOOKUP_TAU_SIZE = 256
 LOOKUP_TAU_SHIFT = 0
 
 
-class Vogels2011Rule(AbstractTimingDependence):
+class TimingDependenceVogels2011(AbstractTimingDependence):
 
     def __init__(self, alpha, tau=20.0):
         AbstractTimingDependence.__init__(self)
@@ -30,7 +30,8 @@ class Vogels2011Rule(AbstractTimingDependence):
         return self._tau
 
     def is_same_as(self, other):
-        if (other is None) or (not isinstance(other, Vogels2011Rule)):
+        if (other is None) or (not isinstance(
+                other, TimingDependenceVogels2011)):
             return False
         return ((self._tau == other._tau) and (self._alpha == other._alpha))
 
