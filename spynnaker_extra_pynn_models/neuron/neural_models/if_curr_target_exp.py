@@ -48,7 +48,7 @@ class IFCurrentTargetExponentialPopulation(AbstractTargetExponentialVertex,
         AbstractPopulationVertex.__init__(
             self, n_neurons=n_neurons, n_params=10, n_global_params=0,
             label=label,
-            binary="IF_curr_exp_stdp_target_additive.aplx", constraints=constraints,
+            binary="IF_curr_exp_target.aplx", constraints=constraints,
             max_atoms_per_core=(IFCurrentTargetExponentialPopulation
                                 ._model_based_max_atoms_per_core),
             machine_time_step=machine_time_step,
@@ -58,7 +58,7 @@ class IFCurrentTargetExponentialPopulation(AbstractTargetExponentialVertex,
 
     @property
     def model_name(self):
-        return "IF_curr_dual_exp"
+        return "IF_curr_target_exp"
 
     @staticmethod
     def set_model_max_atoms_per_core(new_value):
